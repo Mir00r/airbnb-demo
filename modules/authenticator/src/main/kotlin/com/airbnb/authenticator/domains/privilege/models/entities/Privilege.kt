@@ -13,7 +13,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "privileges", schema = "authenticator")
-class Privilege : BaseEntity() {
+class Privilege() : BaseEntity() {
 
     @Column(nullable = false, unique = true)
     lateinit var name: String
@@ -23,17 +23,21 @@ class Privilege : BaseEntity() {
 
     var description: String? = null
 
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @CollectionTable(name = "privileges_access_urls")
-    lateinit var accessUrls: List<String>
+//    @ElementCollection
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @CollectionTable(name = "privileges_access_urls")
+//    lateinit var accessUrls: List<String>
+//
+//    fun accessesArr(): Array<String> {
+//        return accessUrls.toTypedArray()
+//    }
+//
+//    fun accessesStr(): String {
+//        return this.accessUrls.joinToString()
+//    }
 
-    fun accessesArr(): Array<String> {
-        return accessUrls.toTypedArray()
-    }
-
-    fun accessesStr(): String {
-        return this.accessUrls.joinToString()
+    constructor(name: String, label: String) : this() {
+        this.name = name
+        this.label = label
     }
 }

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public final class DateUtil {
     private DateUtil() {
@@ -276,4 +277,77 @@ public final class DateUtil {
         }
     }
 
+    // Function to print difference in
+    // time start_date and end_date
+    public static String findDifference(Date startDate, Date endDate) {
+        // Try Class
+        try {
+
+            // Calculate time difference
+            // in milliseconds
+            long differenceInTime
+                    = startDate.getTime() - endDate.getTime();
+
+            // Calculate time difference in seconds,
+            // minutes, hours, years, and days
+            long differenceInSeconds
+                    = TimeUnit.MILLISECONDS
+                    .toSeconds(differenceInTime)
+                    % 60;
+
+            long differenceInMinutes
+                    = TimeUnit
+                    .MILLISECONDS
+                    .toMinutes(differenceInTime)
+                    % 60;
+
+            long differenceInHours
+                    = TimeUnit
+                    .MILLISECONDS
+                    .toHours(differenceInTime)
+                    % 24;
+
+            long differenceInDays
+                    = TimeUnit
+                    .MILLISECONDS
+                    .toDays(differenceInTime)
+                    % 365;
+
+            long differenceInYears
+                    = TimeUnit
+                    .MILLISECONDS
+                    .toDays(differenceInTime)
+                    / 365;
+
+            // Print the date difference in
+            // years, in days, in hours, in
+            // minutes, and in seconds
+            System.out.print(
+                    "Difference"
+                            + " between two dates is: ");
+            String finalTime = differenceInDays
+                    + " days, "
+                    + differenceInHours
+                    + " hours, "
+                    + differenceInMinutes
+                    + " minutes, "
+                    + differenceInSeconds
+                    + " seconds";
+            // Print result
+            System.out.println(finalTime);
+            return finalTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
+
+    public static Date addHours(Date date, int hours) {
+        if (date == null) return null;
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.HOUR, hours);
+        date = c.getTime();
+        return date;
+    }
 }

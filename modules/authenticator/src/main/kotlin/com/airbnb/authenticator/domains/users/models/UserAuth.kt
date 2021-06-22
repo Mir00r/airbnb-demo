@@ -47,16 +47,13 @@ open class UserAuth(user: User) : UserDetails {
     }
 
     override fun getAuthorities(): Collection<GrantedAuthority?>? {
-        if (this.roles == null) this.roles = ArrayList<Role>()
         val authorityList: MutableList<GrantedAuthority?> = ArrayList()
-        for (role in this.roles!!) {
-            if (role != null) {
-                authorityList.addAll(
-                    role.privileges.stream()
-                        .map { privilege -> SimpleGrantedAuthority(privilege.name) }
-                        .collect(Collectors.toList())
-                )
-            }
+        for (role in this.roles) {
+            authorityList.addAll(
+                role.privileges.stream()
+                    .map { privilege -> SimpleGrantedAuthority(privilege.name) }
+                    .collect(Collectors.toList())
+            )
         }
         return authorityList
     }

@@ -55,7 +55,7 @@ class PrivilegeController @Autowired constructor(
     override fun update(@PathVariable id: Long, @Valid @RequestBody dto: PrivilegeDto): ResponseEntity<PrivilegeDto> {
 
         var privilege =
-            this.privilegeService.find(id).orElseThrow { ExceptionUtil.getNotFound(Privilege::class.java, id) }
+            this.privilegeService.find(id).orElseThrow { ExceptionUtil.notFound(Privilege::class.java, id) }
         privilege = this.privilegeService.save(this.privilegeMapper.map(dto, privilege))
         return ResponseEntity.ok(this.privilegeMapper.map(privilege))
     }

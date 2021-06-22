@@ -22,9 +22,19 @@ class Constants {
         const val SEARCH_ALL_MSG = "Search all list of "
         const val GENERATE_ALL_MSG = "Generate all "
         const val GET_BY_MESSAGE = "Get all by "
+        const val DELETE_MSG = "Delete "
+        const val GET_MSG = "Get "
+        const val BY_ID_MSG = " by Id"
 
         // Rest API Name
         const val PRIVILEGES_ADMIN = "Privileges (Super Admin)"
         const val PRIVILEGES_ADMIN_API_DETAILS = "Admin can manipulate privileges for roles with these api's";
+
+        const val ROLES_ADMIN = "Roles (Super Admin)"
+        const val ROLES_ADMIN_API_DETAILS = "Admin can manipulate user roles with these api's";
+
+        const val USERS_ADMIN = "Users (Super Admin)"
+        const val USERS = "Users"
+        const val USERS_ADMIN_API_DETAILS = "Admin can manipulate users with these api's";
     }
 }

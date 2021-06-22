@@ -54,8 +54,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/api/v1/admin/**"
                 )
                 .hasAnyAuthority(ADMINISTRATION);
-        for (Privilege p : this.privilegeService.findAll())
-            r.antMatchers(p.accessesArr()).hasAnyAuthority(p.name);
+//        for (Privilege p : this.privilegeService.findAll())
+//            r.antMatchers(p.accessesArr()).hasAnyAuthority(p.name);
 
         r.anyRequest()
 //                .authenticated()

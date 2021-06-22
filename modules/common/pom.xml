@@ -137,6 +137,19 @@
 			<version>4.5.5</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.googlecode.libphonenumber/libphonenumber -->
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>8.10.22</version>
+		</dependency>
+
+		<!--EMAIL-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!--Kotlin-->
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>

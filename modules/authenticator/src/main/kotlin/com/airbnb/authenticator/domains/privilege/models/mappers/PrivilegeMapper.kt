@@ -4,6 +4,7 @@ import com.airbnb.authenticator.common.mappers.BaseMapper
 import com.airbnb.authenticator.domains.privilege.models.dtos.PrivilegeDto
 import com.airbnb.authenticator.domains.privilege.models.entities.Privilege
 import org.springframework.stereotype.Component
+import java.util.*
 
 /**
  * @project IntelliJ IDEA
@@ -21,8 +22,8 @@ class PrivilegeMapper : BaseMapper<Privilege, PrivilegeDto> {
         dto.label = entity.label
         dto.name = entity.name
         dto.description = entity.description
-        dto.accessUrls = entity.accessUrls
-        dto.accessUrlsArray = entity.accessUrls.toTypedArray()
+//        dto.accessUrls = entity.accessUrls
+//        dto.accessUrlsArray = entity.accessUrls.toTypedArray()
         return dto
     }
 
@@ -30,9 +31,9 @@ class PrivilegeMapper : BaseMapper<Privilege, PrivilegeDto> {
         val entity = exEntity ?: Privilege()
 
         entity.label = dto.label
-        entity.name = dto.name.replace(" ", "_").toUpperCase()
+        entity.name = dto.name.replace(" ", "_").uppercase(Locale.getDefault())
         entity.description = dto.description
-        entity.accessUrls = dto.accessUrls
+//        entity.accessUrls = dto.accessUrls
         return entity
     }
 }

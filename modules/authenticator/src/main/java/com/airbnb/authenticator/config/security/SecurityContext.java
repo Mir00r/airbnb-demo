@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 
 @Component
 public final class SecurityContext {
@@ -45,10 +47,26 @@ public final class SecurityContext {
         return null;
     }
 
+//    public static UserAuth getCurrentUser() {
+//        String username = getLoggedInUsername();
+//        User user = userRepo.find(username).orElse(null);
+//        return user == null ? null : new UserAuth(user);
+//    }
+
     public static UserAuth getCurrentUser() {
-        String username = getLoggedInUsername();
-        User user = userRepo.find(username).orElse(null);
-        return user == null ? null : new UserAuth(user);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            if (authentication.getPrincipal() instanceof String) {
+                if (loggedInUser == null || !authentication.getPrincipal().equals(loggedInUser.getUsername())) {
+                    Optional<User> user = SecurityContext.userRepo.findByUsername((String) authentication.getPrincipal());
+                    if (user.isEmpty()) return null;
+                    loggedInUser = new UserAuth(user.get());
+                }
+                return loggedInUser;
+            }
+            return (UserAuth) authentication.getPrincipal();
+        }
+        return null;
     }
 
     public static boolean isAuthenticated() {

@@ -71,15 +71,10 @@
 	<dependencies>
 
 		<!--Module Dependencies-->
-		<dependency>
-			<groupId>com.airbnb</groupId>
-			<artifactId>common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.airbnb</groupId>
-			<artifactId>authenticator</artifactId>
+			<artifactId>rentalprocessor</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

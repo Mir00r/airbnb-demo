@@ -25,7 +25,7 @@ class Role : BaseEntity() {
     @Fetch(FetchMode.SUBSELECT)
     @JoinTable(
         name = "roles_privileges",
-        schema = "auth",
+        schema = "authenticator",
         joinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "privilege_id", referencedColumnName = "id")]
     )

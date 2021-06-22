@@ -52,7 +52,7 @@ abstract class BaseEntity : Serializable {
 
     @JsonIgnore
     fun getLoggedInUsername(): String {
-        return SecurityContext.getLoggedInUsername()
+        return SecurityContext.getLoggedInUsername() ?: "admin"
     }
 
     fun isNew(): Boolean {

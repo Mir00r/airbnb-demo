@@ -22,14 +22,14 @@ class PrivilegeDto : BaseDto() {
     @ApiModelProperty(notes = "provide the privilege level of user", example = "Create Post", required = true)
     lateinit var label: String
 
-    @NotBlank.List
-    @JsonProperty("access_urls")
-    @ApiModelProperty(
-        notes = "provide the list of privilege url user can access",
-        example = "[\"change-password\"]",
-        required = true
-    )
-    lateinit var accessUrls: List<String>
-
-    lateinit var accessUrlsArray: Array<String>
+//    @NotBlank.List
+//    @JsonProperty("access_urls")
+//    @ApiModelProperty(
+//        notes = "provide the list of privilege url user can access",
+//        example = "[\"change-password\"]",
+//        required = true
+//    )
+//    lateinit var accessUrls: List<String>
+//
+//    lateinit var accessUrlsArray: Array<String>
 }

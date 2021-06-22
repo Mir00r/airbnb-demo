@@ -17,7 +17,7 @@ import javax.persistence.*
 class User : BaseEntity {
 
     @Column(nullable = false)
-    var name: String? = null
+    lateinit var name: String
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -38,7 +38,7 @@ class User : BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "m_users_roles",
-        schema = "auth",
+        schema = "authenticator",
         joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "roles_id", referencedColumnName = "id")]
     )
@@ -58,7 +58,7 @@ class User : BaseEntity {
     constructor(auth: UserAuth?) {
         requireNotNull(auth) { "User can not be null!" }
         this.id = auth.id
-        name = auth.name
+        name = auth.name ?: ""
         username = auth.username
         password = auth.password
         phone = auth.phone

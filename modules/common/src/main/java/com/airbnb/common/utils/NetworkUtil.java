@@ -135,4 +135,30 @@ public final class NetworkUtil {
         return jsonString;
     }
 
+    public static void getRequest(String url, String body, String authorization) throws IOException {
+        new Thread(() -> {
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            String newUrl = url.replace(" ", "%20");
+            HttpGet httpGet = new HttpGet(newUrl);
+
+            if (body != null && !body.isEmpty()) {
+                httpGet.setHeader("Accept", "application/json");
+                httpGet.setHeader("Content-type", "application/json");
+                httpGet.setHeader("Authorization", authorization);
+            }
+            try {
+                CloseableHttpResponse response = client.execute(httpGet);
+                System.out.println("\n-------------------------------- Response for URL -> " + url + " -----------------------------------------------\n");
+                String jsonString = EntityUtils.toString(response.getEntity());
+                System.out.println(jsonString);
+                client.close();
+                response.close();
+            } catch (IOException ignored) {
+
+            }
+
+        }).start();
+    }
+
 }
