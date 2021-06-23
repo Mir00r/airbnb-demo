@@ -30,7 +30,10 @@ class HouseholdServiceBean @Autowired constructor(
         bath: Byte?,
         balcony: Byte?,
         householdSize: Long?,
-        price: Double?
+        price: Double?,
+        latitude: Double?,
+        longitude: Double?,
+        altitude: Double?
     ): Page<Household> {
         return this.householdRepository.search(
             query,
@@ -43,6 +46,7 @@ class HouseholdServiceBean @Autowired constructor(
             balcony,
             householdSize,
             price,
+            latitude, longitude, altitude,
             PageAttr.getPageRequest(page, size)
         )
     }

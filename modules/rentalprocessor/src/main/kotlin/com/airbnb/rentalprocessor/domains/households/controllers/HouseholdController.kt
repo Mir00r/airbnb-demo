@@ -41,12 +41,13 @@ class HouseholdController @Autowired constructor(
         @RequestParam("balcony", required = false) balcony: Byte?,
         @RequestParam("household_size", required = false) householdSize: Long?,
         @RequestParam("price", required = false) price: Double?,
+        @RequestParam("latitude", required = false) latitude: Double?,
+        @RequestParam("longitude", required = false) longitude: Double?,
+        @RequestParam("altitude", required = false) altitude: Double?
     ): ResponseEntity<Page<HouseholdDto>> {
 
         val entities = this.householdService.search(
-            query,
-            page,
-            size,
+            query, page, size,
             propertyType,
             rentType,
             status,
@@ -55,7 +56,8 @@ class HouseholdController @Autowired constructor(
             bath,
             balcony,
             householdSize,
-            price
+            price,
+            latitude, longitude, altitude
         )
         return ResponseEntity.ok(entities.map { this.householdMapper.map(it) })
     }
