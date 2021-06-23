@@ -29,4 +29,5 @@ interface UserService : BaseCrudService<User> {
 
     @Transactional
     fun resetPassword(username: String, token: String, password: String): User
+    fun search(query: String, role: String, page: Int, size: Int): Page<User>
 }

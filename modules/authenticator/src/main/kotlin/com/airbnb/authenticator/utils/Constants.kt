@@ -36,5 +36,7 @@ class Constants {
         const val USERS_ADMIN = "Users (Super Admin)"
         const val USERS = "Users"
         const val USERS_ADMIN_API_DETAILS = "Admin can manipulate users with these api's";
+
+        const val ROLE = "Role";
     }
 }

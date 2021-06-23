@@ -27,6 +27,10 @@ class RoleServiceBean @Autowired constructor(
         return this.roleRepository.findUnrestricted()
     }
 
+    override fun findByIdsUnrestricted(roleIds: List<Long>): List<Role> {
+        return this.roleRepository.findByRoleIdsUnrestricted(roleIds)
+    }
+
     override fun find(name: String): Optional<Role> {
         return this.roleRepository.find(name)
     }

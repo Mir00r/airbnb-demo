@@ -1,9 +1,9 @@
 package com.airbnb.authenticator.domains.users.models.entities
 
 import com.airbnb.authenticator.domains.roles.models.entities.Role
-import com.airbnb.authenticator.domains.users.models.UserAuth
 import com.airbnb.authenticator.domains.users.models.enums.Genders
 import com.airbnb.authenticator.common.entities.BaseEntity
+import com.airbnb.authenticator.models.UserAuth
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import javax.persistence.*
 
@@ -27,10 +27,10 @@ class User : BaseEntity {
     lateinit var username: String
 
     @Column(unique = true)
-    var email: String? = null
+    lateinit var email: String
 
     @Column(unique = true)
-    var phone: String? = null
+    lateinit var phone: String
 
     @Column(length = 512, nullable = false)
     lateinit var password: String

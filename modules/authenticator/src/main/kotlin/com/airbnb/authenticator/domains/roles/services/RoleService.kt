@@ -11,6 +11,7 @@ import java.util.*
 interface RoleService : BaseCrudService<Role> {
 
     fun findUnrestricted(name: String): Optional<Role>
+    fun findByIdsUnrestricted(roleIds: List<Long>): List<Role>
     fun findUnrestricted(): List<Role>
     fun find(name: String): Optional<Role>
     fun findByIds(roleIds: List<Long>): List<Role>

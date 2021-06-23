@@ -2,9 +2,11 @@ package com.airbnb.authenticator.domains.users.models.mappers
 
 import com.airbnb.authenticator.common.mappers.BaseMapper
 import com.airbnb.authenticator.config.security.SecurityContext
+import com.airbnb.authenticator.domains.roles.models.enums.Roles
 import com.airbnb.authenticator.domains.roles.services.RoleService
 import com.airbnb.authenticator.domains.users.models.dtos.UserDto
 import com.airbnb.authenticator.domains.users.models.entities.User
+import com.airbnb.authenticator.utils.Constants
 import com.airbnb.authenticator.utils.PasswordUtil
 import com.airbnb.common.utils.ExceptionUtil
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +22,20 @@ class UserMapper @Autowired constructor(
 ) : BaseMapper<User, UserDto> {
 
     override fun map(entity: User): UserDto {
-        TODO("Not yet implemented")
+        val dto = UserDto();
+        dto.apply {
+            this.id = entity.id
+            this.createdAt = entity.createdAt
+            this.updatedAt = entity.updatedAt
+
+            this.name = entity.name
+            this.username = entity.username
+            this.gender = entity.gender
+            this.email = entity.email ?: ""
+            this.phone = entity.phone
+            this.role = entity.roles.map { it.name }.toString()
+        }
+        return dto
     }
 
     override fun map(dto: UserDto, exEntity: User?): User {
@@ -29,16 +44,11 @@ class UserMapper @Autowired constructor(
             name = dto.name
             phone = dto.phone
             username = dto.username
-
-            if (dto.password.isNotBlank()) {
-                if (dto.password.length < 6) throw ExceptionUtil.forbidden("Invalid password length!")
-                password = PasswordUtil.encryptPassword(dto.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
-            } else if (exEntity == null) // if password not entered for new user, throw exception
-                throw ExceptionUtil.forbidden("Password length not be empty!")
-
+            gender = dto.gender
             email = dto.email
-            if (exEntity == null || !exEntity.isAdmin)
-                roles = if (SecurityContext.getCurrentUser().isAdmin) roleService.findByIds(dto.roleIds) else roleService.findByIdsUnrestricted(dto.roleIds)
+            password = dto.password
+            val r = roleService.find(dto.role).orElseThrow { ExceptionUtil.notFound(Constants.ROLE, dto.role) }
+            roles = mutableListOf(r)
         }
         return entity
     }

@@ -1,6 +1,7 @@
 package com.airbnb.authenticator.domains.users.services
 
 import com.airbnb.authenticator.config.security.SecurityContext
+import com.airbnb.authenticator.domains.roles.models.entities.Role
 import com.airbnb.authenticator.domains.roles.models.enums.Roles
 import com.airbnb.authenticator.domains.roles.services.RoleService
 import com.airbnb.authenticator.domains.users.models.entities.AcValidationToken
@@ -138,7 +139,7 @@ open class UserServiceBean @Autowired constructor(
 
     override fun setPassword(id: Long, newPassword: String): User {
         val currentUser = SecurityContext.getCurrentUser()
-        if (currentUser == null || !currentUser.admin)
+        if (currentUser == null || !currentUser.isAdmin)
             throw ForbiddenException("You are not authorised to do this action.")
 
         val user: User = this.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
@@ -205,12 +206,19 @@ open class UserServiceBean @Autowired constructor(
         return user
     }
 
+    override fun search(query: String, role: String, page: Int, size: Int): Page<User> {
+        val r = this.roleService.find(role).orElseThrow { ExceptionUtil.notFound("Role", role) }
+        return this.userRepository.search(query, r, PageAttr.getPageRequest(page, size))
+    }
+
     override fun search(query: String, page: Int, size: Int): Page<User> {
         return this.userRepository.search(query, PageAttr.getPageRequest(page, size))
     }
 
     override fun save(entity: User): User {
         this.validate(entity)
+        if (entity.isNew())
+            entity.password = PasswordUtil.encryptPassword(entity.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         return this.userRepository.save(entity)
     }
 
@@ -235,6 +243,10 @@ open class UserServiceBean @Autowired constructor(
 
     override fun validate(entity: User) {
         if (entity.isNew() && this.userExists(entity.username)) throw ExceptionUtil.forbidden("User exists with username: ${entity.username}")
+        if (entity.roles.any { it.isAdmin() }) {
+            val loggedInUser = SecurityContext.getCurrentUser()
+            if (!loggedInUser.isAdmin) ExceptionUtil.forbidden("You are unable to create admin account")
+        }
     }
 
     private fun validateIdentity(phone: Boolean, phoneOrEmail: String) {

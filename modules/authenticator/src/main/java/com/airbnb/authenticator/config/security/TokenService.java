@@ -1,6 +1,6 @@
 package com.airbnb.authenticator.config.security;
 
-import com.airbnb.authenticator.domains.users.models.UserAuth;
+import com.airbnb.authenticator.models.UserAuth;
 import com.airbnb.common.misc.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

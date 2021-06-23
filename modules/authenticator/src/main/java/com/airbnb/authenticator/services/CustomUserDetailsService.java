@@ -1,8 +1,8 @@
 package com.airbnb.authenticator.services;
 
-import com.airbnb.authenticator.domains.users.models.UserAuth;
 import com.airbnb.authenticator.domains.users.models.entities.User;
 import com.airbnb.authenticator.domains.users.repositories.UserRepository;
+import com.airbnb.authenticator.models.UserAuth;
 import com.airbnb.common.exceptions.notfound.UserNotFoundException;
 import com.airbnb.common.utils.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;

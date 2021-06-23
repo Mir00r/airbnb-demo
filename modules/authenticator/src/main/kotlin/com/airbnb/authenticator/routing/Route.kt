@@ -30,8 +30,13 @@ class Route {
         const val CHANGE_USER_ADMIN_ROLE = "$API$VERSION$ADMIN/users/{id}/change-role"
         const val DISABLE_USER_ADMIN = "$API$VERSION$ADMIN/users/{id}/access/toggle"
 
-        const val PUBLIC_SEARCH_USER = "$API$VERSION/users"
+        const val PUBLIC_SEARCH_USER = "$API$VERSION$PUBLIC/users"
         const val SEARCH_USER = "$API$VERSION/users"
+        const val CREATE_USER = "$API$VERSION/users"
+        const val FIND_USER = "$API$VERSION/users/{id}"
+        const val UPDATE_USER = "$API$VERSION/users"
+        const val DELETE_USER = "$API$VERSION/users"
         const val GET_USER_BY_USERNAME = "$API$VERSION/users/{username}"
+        const val CREATE_ADMIN_USER = "$API$VERSION$ADMIN/users"
     }
 }

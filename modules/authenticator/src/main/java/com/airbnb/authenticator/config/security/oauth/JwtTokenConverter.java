@@ -1,6 +1,6 @@
 package com.airbnb.authenticator.config.security.oauth;
 
-import com.airbnb.authenticator.domains.users.models.UserAuth;
+import com.airbnb.authenticator.models.UserAuth;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;

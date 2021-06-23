@@ -1,8 +1,8 @@
 package com.airbnb.authenticator.config.security;
 
-import com.airbnb.authenticator.domains.users.models.UserAuth;
 import com.airbnb.authenticator.domains.users.models.entities.User;
 import com.airbnb.authenticator.domains.users.repositories.UserRepository;
+import com.airbnb.authenticator.models.UserAuth;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

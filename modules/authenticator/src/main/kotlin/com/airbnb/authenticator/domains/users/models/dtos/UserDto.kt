@@ -27,37 +27,28 @@ class UserDto : BaseDto() {
     @ApiModelProperty(notes = "provide a unique username", example = "trump", required = true)
     lateinit var username: String
 
-    @ApiModelProperty(notes = "provide division name in english language", example = "01914837383", required = false)
+    @ApiModelProperty(notes = "provide division name in english language", example = "01914837383")
     var phone: String? = null
 
     @Email
+    @NotBlank
     @ApiModelProperty(notes = "provide unique email address", example = "sample@yahoo.com")
-    var email: String? = null
+    lateinit var email: String
 
     @NotBlank
-    @Size(min = 6)
-    @ApiModelProperty(notes = "provide a user password with length at least 6 character", example = "trump", required = true)
+    @Size(min = 5, message = "Password length should be 5 character!")
+    @ApiModelProperty(notes = "provide a user password with length at least 5 character", example = "trump", required = true)
     lateinit var password: String
         @JsonIgnore get
         @JsonProperty("password") set
 
     @NotNull
     @JsonProperty("gender")
-    @ApiModelProperty(notes = "provide user profile gender type enum id number", example = "1", required = true)
+    @ApiModelProperty(notes = "provide user profile gender type enum id number", example = "MALE", required = true)
     lateinit var gender: Genders
 
     @NotBlank
     @JsonProperty("role")
-    @ApiModelProperty(notes = "provide user role type", example = "user", required = true)
+    @ApiModelProperty(notes = "provide user role type", example = "USER", required = true)
     lateinit var role: String
-        @JsonIgnore get
-
-    @ApiModelProperty(notes = "provide user role type", hidden = true)
-    lateinit var roles: List<Long>
-        @JsonIgnore set
-        @JsonProperty("roles") get
-
-    @NotNull
-    @ApiModelProperty("birthday", example = "157838713600", required = true)
-    var birthday: Date = Date()
 }
