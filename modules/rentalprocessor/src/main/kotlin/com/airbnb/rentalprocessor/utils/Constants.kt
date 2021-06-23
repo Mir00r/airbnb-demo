@@ -1,4 +1,4 @@
-package com.airbnb.authenticator.utils
+package com.airbnb.rentalprocessor.utils
 
 /**
  * @project IntelliJ IDEA
@@ -26,16 +26,6 @@ class Constants {
         const val BY_ID_MSG = " by Id"
 
         // Rest API Name
-        const val PRIVILEGES_ADMIN = "Privileges (Super Admin)"
-        const val PRIVILEGES_ADMIN_API_DETAILS = "Admin can manipulate privileges for roles with these api's";
-
-        const val ROLES_ADMIN = "Roles (Super Admin)"
-        const val ROLES_ADMIN_API_DETAILS = "Admin can manipulate user roles with these api's";
-
-        const val USERS_ADMIN = "Users (Super Admin)"
-        const val USERS = "Users"
-        const val USERS_ADMIN_API_DETAILS = "Admin can manipulate users with these api's";
-
-        const val ROLE = "Role";
+        const val HOUSEHOLDS = "Household"
     }
 }

@@ -42,7 +42,7 @@ class UserMapper @Autowired constructor(
         val entity = exEntity ?: User()
         entity.apply {
             name = dto.name
-            phone = dto.phone
+            phone = dto.phone ?: ""
             username = dto.username
             gender = dto.gender
             email = dto.email

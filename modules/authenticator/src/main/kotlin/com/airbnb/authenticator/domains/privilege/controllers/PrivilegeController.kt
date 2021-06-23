@@ -39,8 +39,10 @@ class PrivilegeController @Autowired constructor(
         return ResponseEntity.ok(privileges.map { privilege -> this.privilegeMapper.map(privilege) })
     }
 
+    @GetMapping(Route.FIND_ADMIN_PRIVILEGES)
     override fun find(id: Long): ResponseEntity<PrivilegeDto> {
-        TODO("Not yet implemented")
+        val entity = this.privilegeService.find(id).orElseThrow { ExceptionUtil.notFound(Privilege::class.java, id) }
+        return ResponseEntity.ok(this.privilegeMapper.map(entity))
     }
 
     @PostMapping(Route.CREATE_ADMIN_PRIVILEGES)
