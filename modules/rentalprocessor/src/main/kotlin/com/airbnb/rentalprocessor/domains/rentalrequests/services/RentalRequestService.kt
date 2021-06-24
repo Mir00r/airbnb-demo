@@ -11,7 +11,7 @@ interface RentalRequestService : BaseCrudService<RentalRequest> {
     fun cancel(id: Long): RentalRequest
 
     fun advanceSearch(
-        query: String, page: Int, size: Int,
+        query: String, page: Int, size: Int, createdBy: String?,
         status: RequestStatuses?,
         requestedById: Long?,
         requestedToId: Long?,

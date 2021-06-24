@@ -1,6 +1,7 @@
 package com.airbnb.rentalprocessor.domains.rentalrequests.services.beans
 
 import com.airbnb.authenticator.config.security.SecurityContext
+import com.airbnb.authenticator.utils.Validation
 import com.airbnb.common.services.MailService
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.common.utils.PageAttr
@@ -53,8 +54,7 @@ open class RentalRequestServiceBean @Autowired constructor(
         val cancelDate: Instant = entity.checkIn.minus(7, ChronoUnit.DAYS)
         if (Instant.now() > cancelDate) throw ExceptionUtil.invalid("Cancelling should be done at least 7 days before the start of the Check In date.")
 
-        val loggedInUser = SecurityContext.getLoggedInUsername()
-        if (entity.createdBy != null && entity.createdBy != loggedInUser) throw ExceptionUtil.forbidden("You are unable to cancel this request")
+        Validation.isAccessResource(entity.createdBy ?: "")
 
         entity.status = RequestStatuses.CANCELED
         entity.household.available = true
@@ -70,9 +70,8 @@ open class RentalRequestServiceBean @Autowired constructor(
     }
 
     override fun advanceSearch(
-        query: String,
-        page: Int,
-        size: Int,
+        query: String, page: Int,
+        size: Int, createdBy: String?,
         status: RequestStatuses?,
         requestedById: Long?,
         requestedToId: Long?,
@@ -82,10 +81,10 @@ open class RentalRequestServiceBean @Autowired constructor(
         checkIn: Instant?,
         checkOut: Instant?
     ): Page<RentalRequest> {
+        val created = createdBy ?: SecurityContext.getLoggedInUsername()
         if (checkIn != null && checkOut != null)
             return this.rentalRequestRepository.search(
-                query,
-                PageAttr.getPageRequest(page, size),
+                query, PageAttr.getPageRequest(page, size), created,
                 status,
                 requestedById,
                 requestedToId,
@@ -96,8 +95,7 @@ open class RentalRequestServiceBean @Autowired constructor(
                 checkOut
             ) else if (checkIn != null && checkOut == null) {
             return this.rentalRequestRepository.searchIn(
-                query,
-                PageAttr.getPageRequest(page, size),
+                query, PageAttr.getPageRequest(page, size), createdBy,
                 status,
                 requestedById,
                 requestedToId,
@@ -108,8 +106,7 @@ open class RentalRequestServiceBean @Autowired constructor(
             )
         } else if (checkIn == null && checkOut != null) {
             return this.rentalRequestRepository.searchOut(
-                query,
-                PageAttr.getPageRequest(page, size),
+                query, PageAttr.getPageRequest(page, size), createdBy,
                 status,
                 requestedById,
                 requestedToId,
@@ -119,8 +116,7 @@ open class RentalRequestServiceBean @Autowired constructor(
                 checkOut
             )
         } else return this.rentalRequestRepository.search(
-            query,
-            PageAttr.getPageRequest(page, size),
+            query, PageAttr.getPageRequest(page, size), createdBy,
             status,
             requestedById,
             requestedToId,
@@ -131,7 +127,11 @@ open class RentalRequestServiceBean @Autowired constructor(
     }
 
     override fun search(query: String, page: Int, size: Int): Page<RentalRequest> {
-        return this.rentalRequestRepository.search(query, PageAttr.getPageRequest(page, size))
+        return this.rentalRequestRepository.search(
+            query,
+            SecurityContext.getLoggedInUsername(),
+            PageAttr.getPageRequest(page, size)
+        )
     }
 
     override fun save(entity: RentalRequest): RentalRequest {
@@ -146,6 +146,7 @@ open class RentalRequestServiceBean @Autowired constructor(
     override fun delete(id: Long, softDelete: Boolean) {
         if (softDelete) {
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
+            Validation.isAccessResource(entity.createdBy ?: "")
             entity.deleted = true
             this.rentalRequestRepository.save(entity)
         }

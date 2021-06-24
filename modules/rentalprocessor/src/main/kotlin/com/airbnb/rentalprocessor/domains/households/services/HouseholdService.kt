@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 
 interface HouseholdService : BaseCrudService<Household> {
     fun search(
-        query: String, page: Int, size: Int,
+        query: String, page: Int, size: Int, createdBy: String?,
         propertyType: PropertyTypes?,
         rentType: RentTypes?,
         status: HouseholdStatuses?,

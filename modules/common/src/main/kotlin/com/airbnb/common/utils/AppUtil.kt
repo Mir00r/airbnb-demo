@@ -1,6 +1,5 @@
 package com.airbnb.common.utils
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*

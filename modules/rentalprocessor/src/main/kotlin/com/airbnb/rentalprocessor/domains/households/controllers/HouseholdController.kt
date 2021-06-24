@@ -1,6 +1,8 @@
 package com.airbnb.rentalprocessor.domains.households.controllers
 
 import com.airbnb.authenticator.common.controllers.BaseCrudController
+import com.airbnb.authenticator.config.security.SecurityContext
+import com.airbnb.authenticator.utils.Validation
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.rentalprocessor.domains.households.models.dtos.HouseholdDto
 import com.airbnb.rentalprocessor.domains.households.models.entities.Household
@@ -32,6 +34,7 @@ class HouseholdController @Autowired constructor(
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("created_by", required = false) createdBy: String?,
         @RequestParam("property_type", required = false) propertyType: PropertyTypes?,
         @RequestParam("rentType", required = false) rentType: RentTypes?,
         @RequestParam("status", required = false) status: HouseholdStatuses?,
@@ -47,7 +50,7 @@ class HouseholdController @Autowired constructor(
     ): ResponseEntity<Page<HouseholdDto>> {
 
         val entities = this.householdService.search(
-            query, page, size,
+            query, page, size, createdBy,
             propertyType,
             rentType,
             status,
@@ -78,6 +81,7 @@ class HouseholdController @Autowired constructor(
     @ApiOperation(value = "Find Household by id")
     override fun find(@PathVariable("id") id: Long): ResponseEntity<HouseholdDto> {
         val entity = this.householdService.find(id).orElseThrow { ExceptionUtil.notFound(Household::class.java, id) }
+        Validation.isAccessResource(entity.createdBy ?: "")
         return ResponseEntity.ok(this.householdMapper.map(entity))
     }
 
@@ -104,6 +108,7 @@ class HouseholdController @Autowired constructor(
         @Valid @RequestBody dto: HouseholdDto
     ): ResponseEntity<HouseholdDto> {
         var entity = this.householdService.find(id).orElseThrow { ExceptionUtil.notFound(Household::class.java, id) }
+        Validation.isAccessResource(entity.createdBy ?: "")
         entity = this.householdService.save(this.householdMapper.map(dto, entity))
         return ResponseEntity.ok(this.householdMapper.map(entity))
     }

@@ -1,6 +1,7 @@
 package com.airbnb.rentalprocessor.domains.rentalrequests.controllers
 
 import com.airbnb.authenticator.common.controllers.BaseCrudController
+import com.airbnb.authenticator.utils.Validation
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.rentalprocessor.domains.rentalrequests.models.dtos.RentalRequestDto
 import com.airbnb.rentalprocessor.domains.rentalrequests.models.entities.RentalRequest
@@ -31,6 +32,7 @@ class RentalRequestController @Autowired constructor(
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
+        @RequestParam("created_by", required = false) createdBy: String?,
         @RequestParam("status", required = false) status: RequestStatuses?,
         @RequestParam("requested_by_id", required = false) requestedById: Long?,
         @RequestParam("requested_to_id", required = false) requestedToId: Long?,
@@ -41,9 +43,7 @@ class RentalRequestController @Autowired constructor(
         @RequestParam("check_out", required = false) checkOut: Instant?
     ): ResponseEntity<Page<RentalRequestDto>> {
         val entities = this.rentalRequestService.advanceSearch(
-            query,
-            page,
-            size,
+            query, page, size, createdBy,
             status,
             requestedById,
             requestedToId,
@@ -72,6 +72,7 @@ class RentalRequestController @Autowired constructor(
     override fun find(@PathVariable("id") id: Long): ResponseEntity<RentalRequestDto> {
         val entity =
             this.rentalRequestService.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
+        Validation.isAccessResource(entity.createdBy ?: "")
         return ResponseEntity.ok(this.rentalRequestMapper.map(entity))
     }
 
@@ -107,6 +108,7 @@ class RentalRequestController @Autowired constructor(
     ): ResponseEntity<RentalRequestDto> {
         var entity =
             this.rentalRequestService.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
+        Validation.isAccessResource(entity.createdBy ?: "")
         entity = this.rentalRequestService.save(this.rentalRequestMapper.map(dto, entity))
         return ResponseEntity.ok(this.rentalRequestMapper.map(entity))
     }

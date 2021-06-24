@@ -1,5 +1,7 @@
 package com.airbnb.rentalprocessor.domains.households.services.beans
 
+import com.airbnb.authenticator.config.security.SecurityContext
+import com.airbnb.authenticator.utils.Validation
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.common.utils.PageAttr
 import com.airbnb.rentalprocessor.domains.households.models.entities.Household
@@ -22,6 +24,7 @@ class HouseholdServiceBean @Autowired constructor(
         query: String,
         page: Int,
         size: Int,
+        createdBy: String?,
         propertyType: PropertyTypes?,
         rentType: RentTypes?,
         status: HouseholdStatuses?,
@@ -36,7 +39,7 @@ class HouseholdServiceBean @Autowired constructor(
         altitude: Double?
     ): Page<Household> {
         return this.householdRepository.search(
-            query,
+            query, createdBy ?: SecurityContext.getLoggedInUsername(),
             propertyType,
             rentType,
             status,
@@ -52,7 +55,11 @@ class HouseholdServiceBean @Autowired constructor(
     }
 
     override fun search(query: String, page: Int, size: Int): Page<Household> {
-        return this.householdRepository.search(query, PageAttr.getPageRequest(page, size))
+        return this.householdRepository.search(
+            query,
+            SecurityContext.getLoggedInUsername(),
+            PageAttr.getPageRequest(page, size)
+        )
     }
 
     override fun changeStatus(id: Long, status: HouseholdStatuses): Household {
@@ -74,6 +81,7 @@ class HouseholdServiceBean @Autowired constructor(
     override fun delete(id: Long, softDelete: Boolean) {
         if (softDelete) {
             val entity = this.find(id).orElseThrow { ExceptionUtil.notFound(Household::class.java, id) }
+            Validation.isAccessResource(entity.createdBy ?: "")
             entity.deleted = true
             this.householdRepository.save(entity)
         }
