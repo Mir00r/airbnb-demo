@@ -24,6 +24,25 @@ class Route {
             const val WEB_UPDATE_HOUSEHOLD_PAGE = "/households/{id}/update"
             const val WEB_UPDATE_HOUSEHOLD = "/households/{id}"
             const val WEB_DELETE_HOUSEHOLD = "/households/{id}/delete"
+
+            // RentalRequests
+            const val ADMIN_RENTAL_REQUESTS_CHANGE_STATUS = "$API$VERSION$ADMIN/rental-requests/{id}/change/status"
+            const val CANCEL_RENTAL_REQUESTS = "$API$VERSION/rental-requests/{id}/cancel"
+            const val ADVANCE_SEARCH_RENTAL_REQUESTS = "$API$VERSION/rental-requests/advance"
+            const val SEARCH_RENTAL_REQUESTS = "$API$VERSION/rental-requests"
+            const val CREATE_RENTAL_REQUEST = "$API$VERSION/rental-requests"
+            const val FIND_RENTAL_REQUEST = "$API$VERSION/rental-requests/{id}"
+            const val UPDATE_RENTAL_REQUEST = "$API$VERSION/rental-requests/{id}"
+            const val DELETE_RENTAL_REQUEST = "$API$VERSION/rental-requests/{id}"
+
+            // RentalRequests (Web)
+            const val WEB_SEARCH_RENTALREQUESTS = "/rentalrequests"
+            const val WEB_CREATE_RENTALREQUEST_PAGE = "/rentalrequests/create"
+            const val WEB_CREATE_RENTALREQUEST = "/rentalrequests"
+            const val WEB_FIND_RENTALREQUEST = "/rentalrequests/{id}"
+            const val WEB_UPDATE_RENTALREQUEST_PAGE = "/rentalrequests/{id}/update"
+            const val WEB_UPDATE_RENTALREQUEST = "/rentalrequests/{id}"
+            const val WEB_DELETE_RENTALREQUEST = "/rentalrequests/{id}/delete"
         }
     }
 }

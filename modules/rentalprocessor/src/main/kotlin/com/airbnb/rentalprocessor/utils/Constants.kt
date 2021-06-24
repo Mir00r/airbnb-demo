@@ -27,5 +27,6 @@ class Constants {
 
         // Rest API Name
         const val HOUSEHOLDS = "Household"
+        const val RENTAL_REQUEST = "Rental Request"
     }
 }

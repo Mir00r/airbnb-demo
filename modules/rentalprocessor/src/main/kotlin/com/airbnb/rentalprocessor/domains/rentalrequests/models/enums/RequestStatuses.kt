@@ -1,4 +1,4 @@
-package com.airbnb.rentalprocessor.domains.households.models.enums
+package com.airbnb.rentalprocessor.domains.rentalrequests.models.enums
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
@@ -6,20 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @project IntelliJ IDEA
  * @author mir00r on 23/6/21
  */
-enum class HouseholdStatuses(
+enum class RequestStatuses(
     var id: Byte,
     @JsonProperty("label") val label: String
 ) {
 
     PENDING(0, "Pending"),
-    ACCEPTED(1, "Accepted"),
-    REJECTED(2, "Rejected");
+    CONFIRMED(1, "Confirmed"),
+    CANCELED(2, "Canceled");
 
     companion object {
 
         @JvmStatic
-        fun get(x: Byte): HouseholdStatuses {
-            for (g: HouseholdStatuses in values()) {
+        fun get(x: Byte): RequestStatuses {
+            for (g: RequestStatuses in values()) {
                 if (g.id == x)
                     return g
             }
@@ -27,8 +27,8 @@ enum class HouseholdStatuses(
         }
 
         @JvmStatic
-        fun get(x: String): HouseholdStatuses {
-            for (g: HouseholdStatuses in values()) {
+        fun get(x: String): RequestStatuses {
+            for (g: RequestStatuses in values()) {
                 if (g.name == x || g.label == x)
                     return g
             }

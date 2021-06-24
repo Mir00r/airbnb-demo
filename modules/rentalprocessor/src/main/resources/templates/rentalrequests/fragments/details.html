@@ -1,0 +1,25 @@
+<html layout:decorate="dashboard" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="main_content">
+    <div th:if="${message!=null}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="card">
+        <div class="header">
+            <h2>
+                RentalRequest Details <small>Description text here...</small>
+            </h2>
+            <div class="pull-right">
+                <a th:href="@{/admin/rentalrequests/create}" class="btn btn-primary">Create New</a>
+                <a th:href="@{/admin/rentalrequests/}+${rentalrequest?.id}+@{/update}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/admin/rentalrequests}" class="btn btn-primary">All RentalRequests</a>
+            </div>
+        </div>
+
+        <div class="body">
+            RentalRequests(<span th:text="${rentalrequest?.id}"></span>) details goes here
+        </div>
+
+    </div>
+
+</div>
+</html>

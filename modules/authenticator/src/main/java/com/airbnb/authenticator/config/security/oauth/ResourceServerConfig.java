@@ -2,6 +2,7 @@ package com.airbnb.authenticator.config.security.oauth;
 
 import com.airbnb.authenticator.domains.privilege.models.dtos.PrivilegeDto;
 import com.airbnb.authenticator.domains.privilege.models.entities.Privilege;
+import com.airbnb.authenticator.domains.privilege.models.enums.Privileges;
 import com.airbnb.authenticator.domains.privilege.services.PrivilegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +56,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 )
                 .hasAnyAuthority(ADMINISTRATION);
 //        for (Privilege p : this.privilegeService.findAll())
-//            r.antMatchers(p.accessesArr()).hasAnyAuthority(p.name);
+        r.antMatchers("/api/v1/**").hasAnyAuthority(Privileges.ACCESS_USER_RESOURCES.name());
 
         r.anyRequest()
 //                .authenticated()

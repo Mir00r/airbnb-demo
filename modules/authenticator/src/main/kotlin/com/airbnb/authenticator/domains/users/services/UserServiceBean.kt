@@ -245,7 +245,7 @@ open class UserServiceBean @Autowired constructor(
         if (entity.isNew() && this.userExists(entity.username)) throw ExceptionUtil.forbidden("User exists with username: ${entity.username}")
         if (entity.roles.any { it.isAdmin() }) {
             val loggedInUser = SecurityContext.getCurrentUser()
-            if (!loggedInUser.isAdmin) ExceptionUtil.forbidden("You are unable to create admin account")
+            if (!loggedInUser.isAdmin) throw ExceptionUtil.forbidden("You are unable to create admin account")
         }
     }
 
