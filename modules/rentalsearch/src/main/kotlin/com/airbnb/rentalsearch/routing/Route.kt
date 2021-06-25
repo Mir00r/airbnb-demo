@@ -1,5 +1,7 @@
 package com.airbnb.rentalsearch.routing
 
+import com.airbnb.rentalprocessor.routing.Route
+
 class Route {
     class V1 {
         companion object {
@@ -8,6 +10,11 @@ class Route {
             private const val ADMIN = "/admin"
 
 
+            // Households Search
+            const val SEARCH_HOUSEHOLDS = "$API$VERSION/households/search"
+
+            // Create New Rental Request
+            const val CREAT_RENTAL_REQUEST = "$API$VERSION/rental-request/create"
         }
     }
 }

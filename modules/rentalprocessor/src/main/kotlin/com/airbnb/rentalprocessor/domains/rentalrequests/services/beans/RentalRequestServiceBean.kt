@@ -5,6 +5,7 @@ import com.airbnb.authenticator.utils.Validation
 import com.airbnb.common.services.MailService
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.common.utils.PageAttr
+import com.airbnb.rentalprocessor.domains.households.models.enums.HouseholdStatuses
 import com.airbnb.rentalprocessor.domains.households.repositories.HouseholdRepository
 import com.airbnb.rentalprocessor.domains.rentalrequests.models.entities.RentalRequest
 import com.airbnb.rentalprocessor.domains.rentalrequests.models.enums.RequestStatuses
@@ -31,7 +32,7 @@ open class RentalRequestServiceBean @Autowired constructor(
         var entity =
             this.rentalRequestRepository.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
         entity.status = statuses
-        entity = this.save(entity)
+        entity = this.rentalRequestRepository.save(entity)
         if (entity.status == RequestStatuses.PENDING || entity.status == RequestStatuses.CONFIRMED) {
             entity.household.available = false
             entity.household.availableFrom = entity.checkOut
@@ -136,7 +137,12 @@ open class RentalRequestServiceBean @Autowired constructor(
 
     override fun save(entity: RentalRequest): RentalRequest {
         this.validate(entity)
-        return this.rentalRequestRepository.save(entity)
+        val updateEntity = this.rentalRequestRepository.save(entity)
+
+        updateEntity.household.available = false
+        updateEntity.household.availableFrom = entity.checkOut.plus(6, ChronoUnit.HOURS)
+        this.householdRepository.save(updateEntity.household)
+        return updateEntity
     }
 
     override fun find(id: Long): Optional<RentalRequest> {
@@ -158,6 +164,10 @@ open class RentalRequestServiceBean @Autowired constructor(
             if (entity.status == RequestStatuses.PENDING && entity.cancelledBy != null) throw ExceptionUtil.invalid("Cancelled by should be empty while create new rental request !")
         }
         if (entity.checkIn.isAfter(entity.checkOut)) throw ExceptionUtil.invalid("Check in date: ${entity.checkIn} should be less then check out: ${entity.checkOut} !")
-        if (!entity.household.available) throw ExceptionUtil.invalid("Currently this household: ${entity.household.id} is not available for rental request !")
+        if (!entity.household.available) throw ExceptionUtil.invalid("Currently this household: ${entity.household.id} is not available for new rental request !")
+        if (entity.household.status == HouseholdStatuses.PENDING || entity.household.status == HouseholdStatuses.REJECTED) throw ExceptionUtil.invalid(
+            "Can not able to process the rental request because the household status still: ${entity.household.status}"
+        )
+        if (entity.checkIn.isBefore(entity.household.availableFrom)) throw ExceptionUtil.invalid("This household available for check in after: ${entity.household.availableFrom}")
     }
 }

@@ -50,7 +50,7 @@ class HouseholdMapper : BaseMapper<Household, HouseholdDto> {
             this.availableFrom = if (dto.availableFrom != null && dto.availableFrom!!.isBefore(Instant.now())) {
                 throw ExceptionUtil.invalid("Available date can not less then current date")
             } else dto.availableFrom
-            if (availableFrom != null && dto.availableFrom!!.isAfter(Instant.now())) this.available = false
+            this.available = false
             this.numberOfBalcony = dto.numberOfBalcony
             this.numberOfBath = dto.numberOfBath
             this.numberOfBed = dto.numberOfBed

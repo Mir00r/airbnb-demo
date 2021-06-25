@@ -9,6 +9,7 @@ class Route {
 
             // Households
             const val CHANGE_HOUSEHOLDS_STATUS = "$API$VERSION$ADMIN/households/{id}/change/status"
+            const val CHANGE_HOUSEHOLDS_AVAILABILITY = "$API$VERSION/households/{id}/change/availability"
             const val ADVANCE_SEARCH_HOUSEHOLDS = "$API$VERSION/households/advance"
             const val SEARCH_HOUSEHOLDS = "$API$VERSION/households"
             const val CREATE_HOUSEHOLD = "$API$VERSION/households"

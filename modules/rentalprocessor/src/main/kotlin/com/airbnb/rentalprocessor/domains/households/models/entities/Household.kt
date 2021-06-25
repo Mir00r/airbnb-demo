@@ -35,7 +35,7 @@ class Household : BaseEntity() {
     @Column(name = "available_from")
     var availableFrom: Instant? = null
 
-    var available = true
+    var available = false
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

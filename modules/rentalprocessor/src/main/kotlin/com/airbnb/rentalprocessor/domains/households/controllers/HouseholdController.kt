@@ -19,10 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.Instant
 import javax.validation.Valid
 
 @RestController
-@Api(tags = [Constants.HOUSEHOLDS], description = "Rest API")
+@Api(tags = [Constants.HOUSEHOLDS], description = Constants.REST_API)
 class HouseholdController @Autowired constructor(
     private val householdService: HouseholdService,
     private val householdMapper: HouseholdMapper
@@ -92,6 +93,15 @@ class HouseholdController @Autowired constructor(
         @RequestParam("status") status: HouseholdStatuses
     ): ResponseEntity<HouseholdDto> {
         return ResponseEntity.ok(this.householdMapper.map(this.householdService.changeStatus(id, status)))
+    }
+
+    @PatchMapping(Route.V1.CHANGE_HOUSEHOLDS_AVAILABILITY)
+    @ApiOperation(value = "Change household available date")
+    fun changeAvailability(
+        @PathVariable("id") id: Long,
+        @RequestParam("available_date") availableDate: Instant
+    ): ResponseEntity<HouseholdDto> {
+        return ResponseEntity.ok(this.householdMapper.map(this.householdService.changeAvailableDate(id, availableDate)))
     }
 
     @PostMapping(Route.V1.CREATE_HOUSEHOLD)

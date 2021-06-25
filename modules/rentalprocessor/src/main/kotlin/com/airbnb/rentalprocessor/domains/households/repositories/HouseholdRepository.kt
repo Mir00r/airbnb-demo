@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.web.bind.annotation.RequestParam
+import java.time.Instant
 import java.util.*
 
 @Repository
@@ -35,6 +36,54 @@ interface HouseholdRepository : JpaRepository<Household, Long> {
         @Param("balcony") balcony: Byte?,
         @Param("size") size: Long?,
         @Param("price") price: Double?,
+        @Param("latitude") latitude: Double?,
+        @Param("longitude") longitude: Double?,
+        @Param("altitude") altitude: Double?,
+        pageable: Pageable
+    ): Page<Household>
+
+    @Query("SELECT hh FROM Household hh WHERE (:q IS NULL OR LOWER(hh.createdBy) LIKE %:q% OR LOWER(hh.hostName) LIKE %:q% OR LOWER(hh.address.country) LIKE %:q% OR LOWER(hh.address.city) LIKE %:q% OR LOWER(hh.address.state) LIKE %:q% OR LOWER(hh.address.zipcode) LIKE %:q% ) AND (:status IS NULL OR hh.status=:status) AND hh.available=true AND (hh.rentPrice BETWEEN :startPrice AND :endPrice) AND (hh.availableFrom >=:from) AND (hh.availableFrom <=:to) AND (:latitude IS NULL OR hh.address.latitude=:latitude) AND (:longitude IS NULL OR hh.address.longitude=:longitude) AND (:altitude IS NULL OR hh.address.altitude=:altitude) AND hh.deleted=FALSE")
+    fun search(
+        @Param("q") query: String?,
+        @Param("status") status: HouseholdStatuses?,
+        @Param("startPrice") startPrice: Double,
+        @Param("endPrice") endPrice: Double,
+        @Param("from") from: Instant,
+        @Param("to") to: Instant,
+        @Param("latitude") latitude: Double?,
+        @Param("longitude") longitude: Double?,
+        @Param("altitude") altitude: Double?,
+        pageable: Pageable
+    ): Page<Household>
+
+    @Query("SELECT hh FROM Household hh WHERE (:q IS NULL OR LOWER(hh.createdBy) LIKE %:q% OR LOWER(hh.hostName) LIKE %:q% OR LOWER(hh.address.country) LIKE %:q% OR LOWER(hh.address.city) LIKE %:q% OR LOWER(hh.address.state) LIKE %:q% OR LOWER(hh.address.zipcode) LIKE %:q% ) AND (:status IS NULL OR hh.status=:status) AND hh.available=true AND (hh.rentPrice BETWEEN :startPrice AND :endPrice) AND (:latitude IS NULL OR hh.address.latitude=:latitude) AND (:longitude IS NULL OR hh.address.longitude=:longitude) AND (:altitude IS NULL OR hh.address.altitude=:altitude) AND hh.deleted=FALSE")
+    fun searchPrice(
+        @Param("q") query: String?,
+        @Param("status") status: HouseholdStatuses?,
+        @Param("startPrice") startPrice: Double,
+        @Param("endPrice") endPrice: Double,
+        @Param("latitude") latitude: Double?,
+        @Param("longitude") longitude: Double?,
+        @Param("altitude") altitude: Double?,
+        pageable: Pageable
+    ): Page<Household>
+
+    @Query("SELECT hh FROM Household hh WHERE (:q IS NULL OR LOWER(hh.createdBy) LIKE %:q% OR LOWER(hh.hostName) LIKE %:q% OR LOWER(hh.address.country) LIKE %:q% OR LOWER(hh.address.city) LIKE %:q% OR LOWER(hh.address.state) LIKE %:q% OR LOWER(hh.address.zipcode) LIKE %:q% ) AND (:status IS NULL OR hh.status=:status) AND hh.available=true AND (hh.availableFrom >=:from) AND (hh.availableFrom <=:to) AND (:latitude IS NULL OR hh.address.latitude=:latitude) AND (:longitude IS NULL OR hh.address.longitude=:longitude) AND (:altitude IS NULL OR hh.address.altitude=:altitude) AND hh.deleted=FALSE")
+    fun searchWithAvailableDate(
+        @Param("q") query: String?,
+        @Param("status") status: HouseholdStatuses?,
+        @Param("from") from: Instant,
+        @Param("to") to: Instant,
+        @Param("latitude") latitude: Double?,
+        @Param("longitude") longitude: Double?,
+        @Param("altitude") altitude: Double?,
+        pageable: Pageable
+    ): Page<Household>
+
+    @Query("SELECT hh FROM Household hh WHERE (:q IS NULL OR LOWER(hh.createdBy) LIKE %:q% OR LOWER(hh.hostName) LIKE %:q% OR LOWER(hh.address.country) LIKE %:q% OR LOWER(hh.address.city) LIKE %:q% OR LOWER(hh.address.state) LIKE %:q% OR LOWER(hh.address.zipcode) LIKE %:q% ) AND (:status IS NULL OR hh.status=:status) AND hh.available=true AND (:latitude IS NULL OR hh.address.latitude=:latitude) AND (:longitude IS NULL OR hh.address.longitude=:longitude) AND (:altitude IS NULL OR hh.address.altitude=:altitude) AND hh.deleted=FALSE")
+    fun searchWithAddress(
+        @Param("q") query: String?,
+        @Param("status") status: HouseholdStatuses?,
         @Param("latitude") latitude: Double?,
         @Param("longitude") longitude: Double?,
         @Param("altitude") altitude: Double?,

@@ -8,6 +8,7 @@ import com.airbnb.rentalprocessor.domains.households.models.enums.RentTypes
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.query.Param
 import org.springframework.web.bind.annotation.RequestParam
+import java.time.Instant
 
 interface HouseholdService : BaseCrudService<Household> {
     fun search(
@@ -26,5 +27,18 @@ interface HouseholdService : BaseCrudService<Household> {
         altitude: Double?
     ): Page<Household>
 
+    fun search(
+        query: String, page: Int, size: Int,
+        status: HouseholdStatuses?,
+        startPrice: Double?,
+        endPrice: Double?,
+        from: Instant?,
+        to: Instant?,
+        latitude: Double?,
+        longitude: Double?,
+        altitude: Double?
+    ): Page<Household>
+
     fun changeStatus(id: Long, status: HouseholdStatuses): Household
+    fun changeAvailableDate(id: Long, availableFrom: Instant): Household
 }
