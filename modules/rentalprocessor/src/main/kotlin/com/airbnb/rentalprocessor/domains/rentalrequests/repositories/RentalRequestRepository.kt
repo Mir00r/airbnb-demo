@@ -75,4 +75,6 @@ interface RentalRequestRepository : JpaRepository<RentalRequest, Long> {
     @Query("SELECT rr FROM RentalRequest rr WHERE rr.id=:id AND rr.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<RentalRequest>
 
+    @Query("SELECT rr FROM RentalRequest rr WHERE rr.household.id=:householdId AND rr.requestedBy.id=:requestedBy AND rr.status=:status AND rr.deleted=FALSE")
+    fun find(@Param("householdId") householdId: Long, @Param("requestedBy") requestedBy: Long, @Param("status") status: RequestStatuses): List<RentalRequest>
 }

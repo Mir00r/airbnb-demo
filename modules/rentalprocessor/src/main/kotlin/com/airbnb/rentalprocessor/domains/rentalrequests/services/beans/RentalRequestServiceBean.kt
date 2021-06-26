@@ -54,18 +54,46 @@ open class RentalRequestServiceBean @Autowired constructor(
             this.rentalRequestRepository.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
         val cancelDate: Instant = entity.checkIn.minus(7, ChronoUnit.DAYS)
         if (Instant.now() > cancelDate) throw ExceptionUtil.invalid("Cancelling should be done at least 7 days before the start of the Check In date.")
-
+        if (entity.status == RequestStatuses.CANCELED) {
+            val cancelledBy = entity.cancelledBy?.name ?: "admin"
+            throw ExceptionUtil.invalid("This rental request already cancelled by: $cancelledBy")
+        }
         Validation.isAccessResource(entity.createdBy ?: "")
 
         entity.status = RequestStatuses.CANCELED
         entity.household.available = true
         entity.household.availableFrom = Instant.now()
-        entity = this.save(entity)
+        entity = this.rentalRequestRepository.save(entity)
         this.householdRepository.save(entity.household)
         this.mailService.sendEmail(
             entity.requestedTo.email,
             "Rental request update",
             "Hello rental request cancel successfully"
+        )
+        return entity
+    }
+
+    @Transactional
+    override fun visited(id: Long, checkOut: Instant?): RentalRequest {
+        var entity =
+            this.rentalRequestRepository.find(id).orElseThrow { ExceptionUtil.notFound(RentalRequest::class.java, id) }
+        Validation.isAccessResource(entity.requestedTo.username)
+        if (entity.status != RequestStatuses.CONFIRMED) {
+            throw ExceptionUtil.invalid("This rental request can not move into visited state because it's already in ${entity.status.name} state")
+        }
+        if (checkOut == null && Instant.now() < entity.checkOut) throw ExceptionUtil.invalid("Unable to process the request because you are still in visited state and your checkin: ${entity.checkIn} and checkout: ${entity.checkOut}")
+        if (checkOut != null && (checkOut < entity.checkIn || checkOut > entity.checkOut)) throw ExceptionUtil.invalid("Checkout date: $checkOut can't be less then from checkin date: ${entity.checkIn} or greater then from checkout date: ${entity.checkOut}")
+
+        entity.status = RequestStatuses.VISITED
+        entity.checkOut = checkOut ?: Instant.now()
+        entity.household.available = true
+        entity.household.availableFrom = checkOut ?: Instant.now()
+        entity = this.rentalRequestRepository.save(entity)
+        this.householdRepository.save(entity.household)
+        this.mailService.sendEmail(
+            entity.requestedTo.email,
+            "Rental request update",
+            "Hello rental request visited successfully and checkout by user"
         )
         return entity
     }

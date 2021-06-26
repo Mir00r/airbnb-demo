@@ -13,7 +13,6 @@ class RentalRequestDto : BaseDto() {
 
     @ApiModelProperty(notes = "rental request status", example = "PENDING", hidden = true)
     var status: RequestStatuses? = null
-        @JsonIgnore set
 
     @JsonProperty("note")
     @ApiModelProperty(notes = "provide note for household host", example = "Hello World")

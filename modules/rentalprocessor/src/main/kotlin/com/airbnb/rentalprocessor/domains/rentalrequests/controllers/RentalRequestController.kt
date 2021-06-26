@@ -76,7 +76,7 @@ class RentalRequestController @Autowired constructor(
         return ResponseEntity.ok(this.rentalRequestMapper.map(entity))
     }
 
-    @GetMapping(Route.V1.ADMIN_RENTAL_REQUESTS_CHANGE_STATUS)
+    @PatchMapping(Route.V1.ADMIN_RENTAL_REQUESTS_CHANGE_STATUS)
     @ApiOperation(value = "Change status of rental request through id by admin")
     fun changeStatusByAdmin(
         @PathVariable("id") id: Long,
@@ -85,12 +85,21 @@ class RentalRequestController @Autowired constructor(
         return ResponseEntity.ok(this.rentalRequestMapper.map(this.rentalRequestService.changeStatus(id, status)))
     }
 
-    @GetMapping(Route.V1.CANCEL_RENTAL_REQUESTS)
+    @PatchMapping(Route.V1.CANCEL_RENTAL_REQUESTS)
     @ApiOperation(value = "Cancel rental request through id by user")
     fun cancelRequest(
         @PathVariable("id") id: Long
     ): ResponseEntity<RentalRequestDto> {
         return ResponseEntity.ok(this.rentalRequestMapper.map(this.rentalRequestService.cancel(id)))
+    }
+
+    @PatchMapping(Route.V1.VISITED_RENTAL_REQUESTS)
+    @ApiOperation(value = "Visited rental request through id by user")
+    fun visitedRequest(
+        @PathVariable("id") id: Long,
+        @RequestParam("checkout", required = false) checkOut: Instant?
+    ): ResponseEntity<RentalRequestDto> {
+        return ResponseEntity.ok(this.rentalRequestMapper.map(this.rentalRequestService.visited(id, checkOut)))
     }
 
     @PostMapping(Route.V1.CREATE_RENTAL_REQUEST)

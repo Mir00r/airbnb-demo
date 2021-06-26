@@ -13,7 +13,8 @@ enum class RequestStatuses(
 
     PENDING(0, "Pending"),
     CONFIRMED(1, "Confirmed"),
-    CANCELED(2, "Canceled");
+    VISITED(2, "Visited"),
+    CANCELED(3, "Canceled");
 
     companion object {
 

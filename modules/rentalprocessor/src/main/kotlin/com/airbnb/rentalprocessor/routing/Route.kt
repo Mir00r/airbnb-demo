@@ -29,6 +29,7 @@ class Route {
             // RentalRequests
             const val ADMIN_RENTAL_REQUESTS_CHANGE_STATUS = "$API$VERSION$ADMIN/rental-requests/{id}/change/status"
             const val CANCEL_RENTAL_REQUESTS = "$API$VERSION/rental-requests/{id}/cancel"
+            const val VISITED_RENTAL_REQUESTS = "$API$VERSION/rental-requests/{id}/visited"
             const val ADVANCE_SEARCH_RENTAL_REQUESTS = "$API$VERSION/rental-requests/advance"
             const val SEARCH_RENTAL_REQUESTS = "$API$VERSION/rental-requests"
             const val CREATE_RENTAL_REQUEST = "$API$VERSION/rental-requests"

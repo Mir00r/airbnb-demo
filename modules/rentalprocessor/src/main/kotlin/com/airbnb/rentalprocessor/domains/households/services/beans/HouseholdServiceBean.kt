@@ -141,6 +141,7 @@ class HouseholdServiceBean @Autowired constructor(
         Validation.isAccessResource(entity.createdBy ?: "")
         if (entity.available) throw ExceptionUtil.invalid("Household is not available right now")
         entity.availableFrom = availableFrom
+        entity.available = true
         return this.save(entity)
     }
 

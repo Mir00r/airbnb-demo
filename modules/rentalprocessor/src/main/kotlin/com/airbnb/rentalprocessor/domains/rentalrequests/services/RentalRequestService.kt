@@ -9,6 +9,7 @@ import java.time.Instant
 interface RentalRequestService : BaseCrudService<RentalRequest> {
     fun changeStatus(id: Long, statuses: RequestStatuses): RentalRequest
     fun cancel(id: Long): RentalRequest
+    fun visited(id: Long, checkOut: Instant?): RentalRequest
 
     fun advanceSearch(
         query: String, page: Int, size: Int, createdBy: String?,
