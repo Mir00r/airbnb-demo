@@ -38,5 +38,11 @@ class Route {
         const val DELETE_USER = "$API$VERSION/users"
         const val GET_USER_BY_USERNAME = "$API$VERSION/users/{username}"
         const val CREATE_ADMIN_USER = "$API$VERSION$ADMIN/users"
+
+        // User registration
+        const val VERIFY_REGISTRATION = "$API$VERSION/register/verify"
+        const val REGISTER = "$API$VERSION/register"
+        const val CHANGE_PASSWORD = "$API$VERSION/change_password"
+        const val RESET_PASSWORD = "$API$VERSION/reset_password"
     }
 }

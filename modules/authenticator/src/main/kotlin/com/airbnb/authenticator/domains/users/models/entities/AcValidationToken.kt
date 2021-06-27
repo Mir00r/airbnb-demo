@@ -10,7 +10,7 @@ import javax.persistence.Table
  * @author mir00r on 22/6/21
  */
 @Entity
-@Table(name = "ac_validation_tokens")
+@Table(name = "ac_validation_tokens", schema = "authenticator")
 class AcValidationToken : ValidationToken() {
 
     @OneToOne

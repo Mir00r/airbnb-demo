@@ -118,7 +118,7 @@ create table if not exists authenticator.ac_validation_tokens
     updated_by        varchar(255),
     uuid_str          varchar(255) not null,
     token             varchar(255) null,
-    token_valid       bit          not null,
+    token_valid       boolean      not null default false,
     token_valid_until timestamp    null,
     reason            varchar(255) null,
     username          varchar(255) null,

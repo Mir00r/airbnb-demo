@@ -23,14 +23,14 @@ import javax.validation.Valid
  * @author mir00r on 22/6/21
  */
 @RestController
-@Api(tags = [Constants.USERS_ADMIN], description = Constants.USERS_ADMIN_API_DETAILS)
+@Api(tags = [Constants.USERS], description = Constants.USERS_API_DETAILS)
 class UserController @Autowired constructor(
     private val userService: UserService,
-    private val userMapper: UserMapper,
-    private val tokenService: TokenService
+    private val userMapper: UserMapper
 ) : BaseCrudController<UserDto> {
 
     @GetMapping(Route.SEARCH_USER)
+    @ApiOperation(value = Constants.SEARCH_ALL_MSG + Constants.USERS)
     override fun search(
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam(value = "page", defaultValue = "0") page: Int,
@@ -42,18 +42,21 @@ class UserController @Autowired constructor(
     }
 
     @GetMapping(Route.FIND_USER)
+    @ApiOperation(value = Constants.GET_MSG + Constants.USERS + Constants.BY_ID_MSG)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<UserDto> {
         val user = this.userService.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
         return ResponseEntity.ok(this.userMapper.map(user))
     }
 
     @PostMapping(Route.CREATE_USER)
+    @ApiOperation(value = Constants.POST_MSG + Constants.USERS)
     override fun create(@Valid @RequestBody dto: UserDto): ResponseEntity<UserDto> {
         val entity = this.userService.save(this.userMapper.map(dto, null))
         return ResponseEntity.ok(this.userMapper.map(entity))
     }
 
     @PatchMapping(Route.UPDATE_USER)
+    @ApiOperation(value = Constants.PATCH_MSG + Constants.USERS)
     override fun update(@PathVariable("id") id: Long, @Valid @RequestBody dto: UserDto): ResponseEntity<UserDto> {
         var entity =
             this.userService.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
@@ -63,59 +66,5 @@ class UserController @Autowired constructor(
 
     override fun delete(id: Long): ResponseEntity<Any> {
         TODO("Not yet implemented")
-    }
-
-    @GetMapping(Route.SEARCH_USER_ADMIN)
-    @ApiOperation(value = Constants.SEARCH_ALL_MSG + Constants.USERS)
-    fun search(
-        @RequestParam("q", defaultValue = "") query: String,
-        @RequestParam(value = "role", defaultValue = "USER") role: String,
-        @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam("size", defaultValue = "10") size: Int
-    ): ResponseEntity<Page<UserDto>> {
-
-        val userPage = this.userService.search(query, role, page, size)
-        return ResponseEntity.ok(userPage.map { this.userMapper.map(it) })
-    }
-
-    @GetMapping(Route.FIND_USER_ADMIN)
-    @ApiOperation(value = Constants.GET_MSG + Constants.USERS + Constants.BY_ID_MSG)
-    fun getUser(@PathVariable("id") userId: Long): ResponseEntity<Any> {
-        val user = this.userService.find(userId).orElseThrow { ExceptionUtil.notFound(User::class.java, userId) }
-        return ResponseEntity.ok(this.userMapper.map(user))
-    }
-
-
-    @PostMapping(Route.DISABLE_USER_ADMIN)
-    @ApiOperation(value = "Disable user by id")
-    fun disableUser(
-        @PathVariable("id") id: Long,
-        @RequestParam("enabled") enabled: Boolean
-    ): ResponseEntity<Any> {
-        var user = this.userService.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
-        user.enabled = enabled
-        user = this.userService.save(user)
-        this.tokenService.revokeAuthentication(UserAuth(user))
-        return ResponseEntity.ok(this.userMapper.map(user))
-    }
-
-    @PutMapping(Route.CHANGE_USER_ADMIN_ROLE)
-    @ApiOperation(value = "Change user role by id")
-    fun changeRole(
-        @PathVariable("id") id: Long,
-        @RequestParam("roles") roles: List<Long>
-    ): ResponseEntity<*> {
-        val user = this.userService.setRoles(id, roles)
-        return ResponseEntity.ok(this.userMapper.map(user))
-    }
-
-    @PatchMapping(Route.CHANGE_USER_ADMIN_PASSWORD)
-    @ApiOperation(value = "Change user password")
-    fun changePassword(
-        @PathVariable("id") userId: Long,
-        @RequestParam("newPassword") newPassword: String
-    ): ResponseEntity<Any> {
-        this.userService.setPassword(userId, newPassword)
-        return ResponseEntity.ok().build()
     }
 }

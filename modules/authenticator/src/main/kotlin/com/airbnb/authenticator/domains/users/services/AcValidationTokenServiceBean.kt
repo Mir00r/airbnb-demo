@@ -49,11 +49,17 @@ class AcValidationTokenServiceBean @Autowired constructor(
         val date = Date()
         val fromDate: Date = DateUtil.getDayStart(date)
         val toDate: Date = DateUtil.getDayEnd(date)
-        return this.acValidationTokenRepository.countByUserIdAndCreatedAtBetween(user.id ?: 0, fromDate.toInstant(), toDate.toInstant()) >= 3
+        return this.acValidationTokenRepository.countByUserIdAndCreatedAtBetween(
+            user.id ?: 0,
+            fromDate.toInstant(),
+            toDate.toInstant()
+        ) >= 3
     }
 
     override fun canGetOTP(username: String): Boolean {
-        val token: AcValidationToken = this.acValidationTokenRepository.findFirstByUsernameOrderByIdDesc(username)
-        return !token.isTokenValid() || Instant.now().isAfter(token.tokenValidUntil)
+        val token = this.acValidationTokenRepository.findByUserName(username)
+        return if (token.isEmpty) true
+        else
+            token.get().isTokenValid() || Instant.now().isAfter(token.get().tokenValidUntil)
     }
 }

@@ -34,9 +34,6 @@ import java.util.*
 @Service
 open class UserServiceBean @Autowired constructor(
     private val userRepository: UserRepository,
-    private val acValidationTokenService: AcValidationTokenService,
-    private val mailService: MailService,
-    private val smsService: SmsService,
     private val roleService: RoleService
 ) : UserService {
 
@@ -61,58 +58,6 @@ open class UserServiceBean @Autowired constructor(
         return this.userRepository.findByRolesName(role)
     }
 
-    override fun register(token: String, user: User): User {
-        if (!this.acValidationTokenService.isTokenValid(token))
-            throw InvalidException("Token invalid!")
-        val acValidationToken = this.acValidationTokenService.findByToken(token)
-
-        val username = if (authMethod == "phone") user.phone else user.email
-        if (username != acValidationToken.username) throw InvalidException("Token invalid!")
-
-        val savedUser = this.save(user)
-        acValidationToken.tokenValid = false
-        acValidationToken.reason = "Registration/Otp Confirmation"
-        this.acValidationTokenService.save(acValidationToken)
-        this.notifyAdmin(savedUser)
-        return savedUser
-    }
-
-    override fun requireAccountValidationByOTP(phoneOrEmail: String, tokenValidUntil: Date): Boolean {
-        val isPhone = this.authMethod == "phone"
-        this.validateIdentity(isPhone, phoneOrEmail)
-
-        val user = if (isPhone) this.userRepository.findByPhone(phoneOrEmail)
-        else this.userRepository.findByEmail(phoneOrEmail)
-        if (user.isPresent) throw UserAlreadyExistsException("User already registered with this ${authMethod}!")
-
-        if (!this.acValidationTokenService.canGetOTP(phoneOrEmail))
-            throw ForbiddenException("Already sent an OTP. Please try agin in two minutes!")
-        var acValidationToken = AcValidationToken()
-        acValidationToken.token = SessionIdentifierGenerator.generateOTP().toString()
-        acValidationToken.tokenValid = true
-        acValidationToken.username = phoneOrEmail
-        acValidationToken.tokenValidUntil = tokenValidUntil.toInstant()
-        acValidationToken.reason = "User Registration"
-        // save acvalidationtoken
-        acValidationToken = this.acValidationTokenService.save(acValidationToken)
-        val finalAcValidationToken = acValidationToken
-        Thread {
-            try {
-                Thread.sleep((2 * 60 * 1000).toLong())
-                finalAcValidationToken.tokenValid = false
-                acValidationTokenService.save(finalAcValidationToken)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
-        }.start()
-
-        // build confirmation link
-        val tokenMessage = "Your " + this.applicationName + " token is: " + acValidationToken.token
-        // send link by sms
-        return if (this.authMethod == "phone") this.smsService.sendSms(phoneOrEmail, tokenMessage)
-        else this.mailService.sendEmail(phoneOrEmail, this.applicationName + " Registration", tokenMessage)
-    }
-
     override fun findByUsername(username: String): Optional<User> {
         return this.userRepository.findByUsername(username)
     }
@@ -123,18 +68,6 @@ open class UserServiceBean @Autowired constructor(
 
     override fun findByEmail(email: String): Optional<User> {
         return this.userRepository.findByEmail(email)
-    }
-
-    override fun changePassword(id: Long, currentPassword: String, newPassword: String): User {
-        var user: User = this.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
-
-        if (!PasswordUtil.matches(user.password, currentPassword))
-            throw ForbiddenException("Password doesn't match")
-
-        if (newPassword.length < 6) throw InvalidException("Password must be at least 6 characters!")
-        user.password = PasswordUtil.encryptPassword(newPassword, PasswordUtil.EncType.BCRYPT_ENCODER, null)
-        user = this.save(user)
-        return user
     }
 
     override fun setPassword(id: Long, newPassword: String): User {
@@ -149,33 +82,6 @@ open class UserServiceBean @Autowired constructor(
         return this.save(user)
     }
 
-    override fun handlePasswordResetRequest(username: String) {
-        val user = this.findByUsername(username)
-            .orElseThrow { ForbiddenException("Could not find user with username: $username") }
-
-        if (this.acValidationTokenService.isLimitExceeded(user))
-            throw LimitExceedException("Limit exceeded!")
-
-        val otp = SessionIdentifierGenerator.generateOTP()
-
-        val message = "Your Password Reset OTP code is: $otp"
-        val success = this.smsService.sendSms(user.phone, message)
-        // save validation token
-        if (!success) throw UnknownException("Could not send SMS")
-
-        val resetToken = AcValidationToken()
-        resetToken.user = user
-        resetToken.token = otp.toString()
-        resetToken.tokenValid = true
-        resetToken.reason = "Password Reset (Initiated)"
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis() + Integer.parseInt(this.tokenValidity)
-        resetToken.tokenValidUntil = calendar.time.toInstant()
-
-        this.acValidationTokenService.save(resetToken)
-    }
-
     override fun setRoles(id: Long, roleIds: List<Long>): User {
         val user = this.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
         val isAdmin = user.isAdmin() // check if user is admin
@@ -187,23 +93,6 @@ open class UserServiceBean @Autowired constructor(
             user.roles.add(role)
         }
         return this.save(user)
-    }
-
-    @Transactional
-    override fun resetPassword(username: String, token: String, password: String): User {
-        if (password.length < 6)
-            throw ForbiddenException("Password length should be at least 6")
-        val acValidationToken = this.acValidationTokenService.findByToken(token)
-        var user = acValidationToken.user
-        if (username != user.username)
-            throw ForbiddenException("You are not authorized to do this action!")
-        user.password = PasswordUtil.encryptPassword(password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
-        acValidationToken.tokenValid = false
-        acValidationToken.reason = "Password Reset"
-        user = this.save(user)
-        acValidationToken.user = user
-        this.acValidationTokenService.save(acValidationToken)
-        return user
     }
 
     override fun search(query: String, role: String, page: Int, size: Int): Page<User> {
@@ -245,30 +134,7 @@ open class UserServiceBean @Autowired constructor(
         if (entity.isNew() && this.userExists(entity.username)) throw ExceptionUtil.forbidden("User exists with username: ${entity.username}")
         if (entity.roles.any { it.isAdmin() }) {
             val loggedInUser = SecurityContext.getCurrentUser()
-            if (!loggedInUser.isAdmin) throw ExceptionUtil.forbidden("You are unable to create admin account")
+            if (loggedInUser != null && !loggedInUser.isAdmin) throw ExceptionUtil.forbidden("You are unable to create admin account")
         }
-    }
-
-    private fun validateIdentity(phone: Boolean, phoneOrEmail: String) {
-        if (phone) {
-            if (!Validator.isValidPhoneNumber(phoneOrEmail))
-                throw InvalidException("Phone number: $phoneOrEmail is invalid!")
-        } else {
-            if (!Validator.isValidEmail(phoneOrEmail))
-                throw InvalidException("Email: $phoneOrEmail is invalid!")
-        }
-    }
-
-    private fun notifyAdmin(user: User) {
-//        val data = NotificationData()
-//        data.title = "New Registration -:- " + user.name
-//        val description = "Username: " + user.username + ", On: " + DateUtil.getReadableDateTime(Date())
-//        val brief = description.substring(0, Math.min(description.length, 100))
-//        data.message = brief
-//        data.type = PushNotification.Type.ADMIN_NOTIFICATIONS.value
-//
-//        val notification = PushNotification(null, data)
-//        notification.to = "/topics/adminnotifications"
-//        this.notificationService.sendNotification(notification)
     }
 }

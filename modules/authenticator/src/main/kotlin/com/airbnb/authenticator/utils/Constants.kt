@@ -34,7 +34,21 @@ class Constants {
 
         const val USERS_ADMIN = "Users (Super Admin)"
         const val USERS = "Users"
+        const val USERS_REGISTRATION = "Users Registration"
         const val USERS_ADMIN_API_DETAILS = "Admin can manipulate users with these api's";
+        const val USERS_API_DETAILS = "Users can manipulate himself with these api's";
+        const val USERS_REGISTRATION_API_DETAILS =
+            "Users registration, verify, password changes and new password setting these api's";
+
+        const val VERIFY_PHONE = "Verify phone number before registration/Obtain OTP with this endpoint"
+        const val REGISTER = "Register user with otp and user information"
+        const val CHANGE_PASSWORD = "Change password"
+        const val VERIFY_RESET_PASSWORD = "Verify before reseting password/Obtain OTP"
+        const val RESET_PASSWORD = "Reset password with OTP"
+        const val BASIC_API_DETAILS =
+            "Basic operations like Register/Change or Reset Password/Verify Phones and Email Addresses"
+        const val GLOBAL_API_DETAILS = "Global operations like reloading app, destroying the universe etc."
+        const val RELOAD_CONTEXT = "Reload Application Context/Restart App"
 
         const val ROLE = "Role";
     }

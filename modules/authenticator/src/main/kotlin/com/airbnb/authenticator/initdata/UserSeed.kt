@@ -75,7 +75,7 @@ class UserSeed @Autowired constructor(
         val user = User()
         user.name = "Admin"
         user.username = this.adminUsername
-        user.password = PasswordUtil.encryptPassword(this.adminPass, PasswordUtil.EncType.BCRYPT_ENCODER, null)
+        user.password = this.adminPass
         user.phone = this.adminPhone
         user.email = this.adminEmail
         user.gender = Genders.MALE
