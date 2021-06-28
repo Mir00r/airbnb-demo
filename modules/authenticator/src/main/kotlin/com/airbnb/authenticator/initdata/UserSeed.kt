@@ -5,11 +5,10 @@ import com.airbnb.authenticator.domains.privilege.models.enums.Privileges
 import com.airbnb.authenticator.domains.privilege.services.PrivilegeService
 import com.airbnb.authenticator.domains.roles.models.entities.Role
 import com.airbnb.authenticator.domains.roles.models.enums.Roles
-import com.airbnb.authenticator.domains.roles.repositories.RoleRepository
 import com.airbnb.authenticator.domains.roles.services.RoleService
 import com.airbnb.authenticator.domains.users.models.entities.User
 import com.airbnb.authenticator.domains.users.models.enums.Genders
-import com.airbnb.authenticator.domains.users.services.UserService
+import com.airbnb.authenticator.domains.users.repositories.UserRepository
 import com.airbnb.authenticator.utils.PasswordUtil
 import com.airbnb.common.exceptions.notfound.NotFoundException
 import com.airbnb.common.utils.ExceptionUtil
@@ -27,7 +26,7 @@ import org.springframework.stereotype.Component
 class UserSeed @Autowired constructor(
     private val privilegeService: PrivilegeService,
     private val roleService: RoleService,
-    private val userService: UserService
+    private val userRepository: UserRepository
 ) {
     @Value("\${admin.username}")
     lateinit var adminUsername: String
@@ -75,7 +74,7 @@ class UserSeed @Autowired constructor(
         val user = User()
         user.name = "Admin"
         user.username = this.adminUsername
-        user.password = this.adminPass
+        user.password = PasswordUtil.encryptPassword(this.adminPass, PasswordUtil.EncType.BCRYPT_ENCODER, null)
         user.phone = this.adminPhone
         user.email = this.adminEmail
         user.gender = Genders.MALE
@@ -84,7 +83,7 @@ class UserSeed @Autowired constructor(
             this.roleService.find(Roles.ADMIN.name)
                 .orElseThrow { NotFoundException("Could not assign admin role to admin as it's not found!") })
 
-        this.userService.save(user)
+        this.userRepository.save(user)
     }
 
     private fun createPrivilegesIfNotExists(): List<Privilege> {

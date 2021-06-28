@@ -7,6 +7,7 @@ import com.airbnb.authenticator.domains.roles.services.RoleService
 import com.airbnb.authenticator.domains.users.models.entities.AcValidationToken
 import com.airbnb.authenticator.domains.users.models.entities.User
 import com.airbnb.authenticator.domains.users.repositories.UserRepository
+import com.airbnb.authenticator.routing.Route
 import com.airbnb.authenticator.utils.PasswordUtil
 import com.airbnb.authenticator.utils.SessionIdentifierGenerator
 import com.airbnb.common.exceptions.exists.UserAlreadyExistsException
@@ -34,7 +35,8 @@ import java.util.*
 @Service
 open class UserServiceBean @Autowired constructor(
     private val userRepository: UserRepository,
-    private val roleService: RoleService
+    private val roleService: RoleService,
+    private val mailService: MailService
 ) : UserService {
 
     @Value("\${auth.method}")
@@ -45,6 +47,9 @@ open class UserServiceBean @Autowired constructor(
 
     @Value("\${token.validity}")
     lateinit var tokenValidity: String
+
+    @Value("\${app.base-url}")
+    lateinit var baseUrl: String
 
     override fun findAll(page: Int): Page<User> {
         return this.userRepository.findAll(PageAttr.getPageRequest(page))
@@ -95,6 +100,13 @@ open class UserServiceBean @Autowired constructor(
         return this.save(user)
     }
 
+    override fun verifyUser(id: Long): User {
+        val user = this.find(id).orElseThrow { ExceptionUtil.notFound(User::class.java, id) }
+        if (user.enabled) throw ExceptionUtil.invalid("User already verified")
+        user.enabled = true
+        return this.userRepository.save(user)
+    }
+
     override fun search(query: String, role: String, page: Int, size: Int): Page<User> {
         val r = this.roleService.find(role).orElseThrow { ExceptionUtil.notFound("Role", role) }
         return this.userRepository.search(query, r, PageAttr.getPageRequest(page, size))
@@ -106,9 +118,19 @@ open class UserServiceBean @Autowired constructor(
 
     override fun save(entity: User): User {
         this.validate(entity)
-        if (entity.isNew())
+        if (entity.isNew()) {
             entity.password = PasswordUtil.encryptPassword(entity.password, PasswordUtil.EncType.BCRYPT_ENCODER, null)
-        return this.userRepository.save(entity)
+            entity.enabled = false
+        }
+        val saveEntity = this.userRepository.save(entity)
+        if (!saveEntity.enabled) {
+            this.mailService.sendEmail(
+                saveEntity.email,
+                "User verified link",
+                "$baseUrl${Route.VERIFIED_USER}/${saveEntity.id}"
+            )
+        }
+        return saveEntity
     }
 
     override fun find(id: Long): Optional<User> {

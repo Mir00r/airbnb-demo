@@ -31,7 +31,7 @@ class UserMapper @Autowired constructor(
             this.name = entity.name
             this.username = entity.username
             this.gender = entity.gender
-            this.email = entity.email ?: ""
+            this.email = entity.email
             this.phone = entity.phone
             this.role = entity.roles.map { it.name }.toString()
         }

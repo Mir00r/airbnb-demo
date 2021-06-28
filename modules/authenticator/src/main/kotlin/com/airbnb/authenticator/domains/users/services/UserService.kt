@@ -22,6 +22,7 @@ interface UserService : BaseCrudService<User> {
 
     fun setPassword(id: Long, newPassword: String): User
     fun setRoles(id: Long, roleIds: List<Long>): User
+    fun verifyUser(id: Long): User
     fun userExists(username: String): Boolean
 
     fun search(query: String, role: String, page: Int, size: Int): Page<User>

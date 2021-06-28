@@ -55,6 +55,12 @@ class UserController @Autowired constructor(
         return ResponseEntity.ok(this.userMapper.map(entity))
     }
 
+    @PatchMapping(Route.VERIFIED_USER)
+    @ApiOperation(value = "Verify user through email")
+    fun verifyUser(@PathVariable("id") id: Long): ResponseEntity<UserDto> {
+        return ResponseEntity.ok(this.userMapper.map(userService.verifyUser(id)))
+    }
+
     @PatchMapping(Route.UPDATE_USER)
     @ApiOperation(value = Constants.PATCH_MSG + Constants.USERS)
     override fun update(@PathVariable("id") id: Long, @Valid @RequestBody dto: UserDto): ResponseEntity<UserDto> {
