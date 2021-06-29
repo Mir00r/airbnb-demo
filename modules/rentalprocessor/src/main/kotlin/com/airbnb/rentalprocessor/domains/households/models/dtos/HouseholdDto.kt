@@ -1,14 +1,13 @@
 package com.airbnb.rentalprocessor.domains.households.models.dtos
 
 import com.airbnb.authenticator.common.dtos.BaseDto
+import com.airbnb.rentalprocessor.domains.households.models.enums.HouseholdStatuses
 import com.airbnb.rentalprocessor.domains.households.models.enums.PropertyTypes
 import com.airbnb.rentalprocessor.domains.households.models.enums.RentTypes
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
 import java.time.Instant
 import javax.validation.constraints.Min
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 
@@ -48,7 +47,6 @@ class HouseholdDto : BaseDto() {
     var availableFrom: Instant? = null
 
     var available: Boolean = false
-        @JsonIgnore set
 
     @NotNull
     @JsonProperty("rent_type")
@@ -59,6 +57,8 @@ class HouseholdDto : BaseDto() {
     @JsonProperty("property_type")
     @ApiModelProperty(notes = "provide property type of household", example = "COMMERCIAL", required = true)
     lateinit var propertyType: PropertyTypes
+
+    var status: HouseholdStatuses? = null
 
     var address: HouseholdAddressDto? = null
 

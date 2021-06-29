@@ -37,6 +37,7 @@ class HouseholdMapper : BaseMapper<Household, HouseholdDto> {
             this.amenities = mapAmenities(entity.amenities ?: Amenities())
             this.address = mapAddress(entity.address ?: HouseholdAddress())
             this.images = entity.images
+            this.status = entity.status
         }
 
         return dto
