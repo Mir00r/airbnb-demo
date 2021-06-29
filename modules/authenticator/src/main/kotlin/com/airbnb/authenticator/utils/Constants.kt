@@ -34,6 +34,7 @@ class Constants {
 
         const val USERS_ADMIN = "Users (Super Admin)"
         const val USERS = "Users"
+        const val ADMIN = "Admin"
         const val USERS_REGISTRATION = "Users Registration"
         const val USERS_ADMIN_API_DETAILS = "Admin can manipulate users with these api's";
         const val USERS_API_DETAILS = "Users can manipulate himself with these api's";
@@ -51,5 +52,6 @@ class Constants {
         const val RELOAD_CONTEXT = "Reload Application Context/Restart App"
 
         const val ROLE = "Role";
+        const val AUTHENTICATOR = "Authenticator";
     }
 }

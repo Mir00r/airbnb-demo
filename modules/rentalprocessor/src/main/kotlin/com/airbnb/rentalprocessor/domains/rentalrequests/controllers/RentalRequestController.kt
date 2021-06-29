@@ -20,7 +20,7 @@ import java.time.Instant
 import javax.validation.Valid
 
 @RestController
-@Api(tags = [Constants.RENTAL_REQUEST], description = Constants.REST_API)
+@Api(tags = [Constants.RENTAL_PROCESSOR], description = Constants.REST_API)
 class RentalRequestController @Autowired constructor(
     private val rentalRequestService: RentalRequestService,
     private val rentalRequestMapper: RentalRequestMapper
@@ -56,7 +56,7 @@ class RentalRequestController @Autowired constructor(
         return ResponseEntity.ok(entities.map { this.rentalRequestMapper.map(it) })
     }
 
-    @GetMapping(Route.V1.SEARCH_RENTAL_REQUESTS)
+//    @GetMapping(Route.V1.SEARCH_RENTAL_REQUESTS)
     @ApiOperation(value = Constants.SEARCH_ALL_MSG + Constants.RENTAL_REQUEST)
     override fun search(
         @RequestParam("q", defaultValue = "") query: String,
@@ -102,7 +102,7 @@ class RentalRequestController @Autowired constructor(
         return ResponseEntity.ok(this.rentalRequestMapper.map(this.rentalRequestService.visited(id, checkOut)))
     }
 
-    @PostMapping(Route.V1.CREATE_RENTAL_REQUEST)
+    //@PostMapping(Route.V1.CREATE_RENTAL_REQUEST)
     @ApiOperation(value = Constants.POST_MSG + Constants.RENTAL_REQUEST)
     override fun create(@Valid @RequestBody dto: RentalRequestDto): ResponseEntity<RentalRequestDto> {
         val entity = this.rentalRequestService.save(this.rentalRequestMapper.map(dto, null))

@@ -23,7 +23,7 @@ import java.time.Instant
 import javax.validation.Valid
 
 @RestController
-@Api(tags = [Constants.HOUSEHOLDS], description = Constants.REST_API)
+@Api(tags = [Constants.RENTAL_PROCESSOR], description = Constants.REST_API)
 class HouseholdController @Autowired constructor(
     private val householdService: HouseholdService,
     private val householdMapper: HouseholdMapper
@@ -66,7 +66,7 @@ class HouseholdController @Autowired constructor(
         return ResponseEntity.ok(entities.map { this.householdMapper.map(it) })
     }
 
-    @GetMapping(Route.V1.SEARCH_HOUSEHOLDS)
+//    @GetMapping(Route.V1.SEARCH_HOUSEHOLDS)
     @ApiOperation(value = Constants.SEARCH_ALL_MSG + Constants.HOUSEHOLDS)
     override fun search(
         @RequestParam("q", defaultValue = "") query: String,

@@ -26,6 +26,7 @@ class Constants {
         const val BY_ID_MSG = " by Id"
 
         // Rest API Name
+        const val RENTAL_SEARCH = "Rental Search"
         const val HOUSEHOLDS_SEARCH = "Household Search"
         const val RENTAL_REQUEST_BY_USER = "Rental Request By User"
         const val REVIEWS = "Review"

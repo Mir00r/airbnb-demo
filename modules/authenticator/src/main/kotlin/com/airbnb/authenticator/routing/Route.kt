@@ -32,6 +32,7 @@ class Route {
 
         const val PUBLIC_SEARCH_USER = "$API$VERSION$PUBLIC/users"
         const val SEARCH_USER = "$API$VERSION/users"
+        const val CREATE_ADMIN_ACCOUNT = "$API$VERSION$ADMIN/create"
         const val CREATE_USER = "$API$VERSION/users"
         const val FIND_USER = "$API$VERSION/users/{id}"
         const val UPDATE_USER = "$API$VERSION/users"

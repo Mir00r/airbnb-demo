@@ -8,6 +8,7 @@ import com.airbnb.authenticator.domains.users.models.enums.AuthMethods
 import com.airbnb.authenticator.domains.users.models.mappers.TokenMapper
 import com.airbnb.authenticator.domains.users.models.mappers.UserMapper
 import com.airbnb.authenticator.domains.users.services.UserRegisterService
+import com.airbnb.authenticator.domains.users.services.UserService
 import com.airbnb.authenticator.models.UserAuth
 import com.airbnb.authenticator.routing.Route
 import com.airbnb.authenticator.utils.Constants
@@ -20,16 +21,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.validation.Valid
 
 /**
  * @project IntelliJ IDEA
  * @author mir00r on 26/6/21
  */
 @RestController
-@Api(tags = [Constants.USERS_REGISTRATION], description = Constants.USERS_REGISTRATION_API_DETAILS)
+@Api(tags = [Constants.AUTHENTICATOR], description = Constants.USERS_REGISTRATION_API_DETAILS)
 class UserRegisterController @Autowired constructor(
     private val userRegisterService: UserRegisterService,
     private val userMapper: UserMapper,
+    private val userService: UserService,
     private val tokenService: TokenService,
     private val tokenMapper: TokenMapper
 ) {
@@ -95,5 +98,12 @@ class UserRegisterController @Autowired constructor(
         @RequestParam("password") password: String
     ) {
         this.userRegisterService.resetPassword(username, token, password)
+    }
+
+    @PostMapping(Route.CREATE_ADMIN_ACCOUNT)
+    @ApiOperation(value = Constants.POST_MSG + Constants.ADMIN)
+    fun createAdminAccount(@Valid @RequestBody dto: UserDto): ResponseEntity<UserDto> {
+        val entity = this.userService.save(this.userMapper.map(dto, null))
+        return ResponseEntity.ok(this.userMapper.map(entity))
     }
 }

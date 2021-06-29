@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@Api(tags = [Constants.REVIEWS], description = Constants.REST_API)
+@Api(tags = [Constants.RENTAL_SEARCH], description = Constants.REST_API)
 class ReviewController @Autowired constructor(
     private val reviewService: ReviewService,
     private val reviewMapper: ReviewMapper

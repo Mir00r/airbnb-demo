@@ -23,7 +23,7 @@ import java.time.Instant
  * @author mir00r on 25/6/21
  */
 @RestController
-@Api(tags = [Constants.HOUSEHOLDS_SEARCH], description = Constants.REST_API)
+@Api(tags = [Constants.RENTAL_SEARCH], description = Constants.REST_API)
 open class HouseholdSearchController @Autowired constructor(
     private val householdService: HouseholdService,
     private val householdMapper: HouseholdMapper

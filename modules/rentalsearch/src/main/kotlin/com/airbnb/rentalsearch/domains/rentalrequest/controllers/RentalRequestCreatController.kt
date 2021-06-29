@@ -19,7 +19,7 @@ import javax.validation.Valid
  * @author mir00r on 25/6/21
  */
 @RestController
-@Api(tags = [Constants.RENTAL_REQUEST_BY_USER], description = Constants.REST_API)
+@Api(tags = [Constants.RENTAL_SEARCH], description = Constants.REST_API)
 class RentalRequestCreatController @Autowired constructor(
     private val rentalRequestService: RentalRequestService,
     private val rentalRequestMapper: RentalRequestMapper
