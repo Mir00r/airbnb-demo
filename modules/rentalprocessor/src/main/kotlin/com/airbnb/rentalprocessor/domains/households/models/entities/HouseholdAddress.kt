@@ -1,5 +1,6 @@
 package com.airbnb.rentalprocessor.domains.households.models.entities
 
+import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Embeddable
 
@@ -8,7 +9,7 @@ import javax.persistence.Embeddable
  * @author mir00r on 23/6/21
  */
 @Embeddable
-class HouseholdAddress {
+class HouseholdAddress : Serializable {
 
     @Column(name = "line_one")
     lateinit var lineOne: String

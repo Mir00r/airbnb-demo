@@ -3,6 +3,7 @@ package com.airbnb.rentalprocessor.domains.households.services.beans
 import com.airbnb.authenticator.config.security.SecurityContext
 import com.airbnb.authenticator.domains.users.services.UserService
 import com.airbnb.authenticator.utils.Validation
+import com.airbnb.common.configs.RedisConfig
 import com.airbnb.common.services.MailService
 import com.airbnb.common.utils.ExceptionUtil
 import com.airbnb.common.utils.PageAttr
@@ -13,13 +14,14 @@ import com.airbnb.rentalprocessor.domains.households.models.enums.RentTypes
 import com.airbnb.rentalprocessor.domains.households.repositories.HouseholdRepository
 import com.airbnb.rentalprocessor.domains.households.services.HouseholdService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*
 
 @Service
-class HouseholdServiceBean @Autowired constructor(
+open class HouseholdServiceBean @Autowired constructor(
     private val householdRepository: HouseholdRepository,
     private val mailService: MailService,
     private val userService: UserService
@@ -59,6 +61,11 @@ class HouseholdServiceBean @Autowired constructor(
         )
     }
 
+    @Cacheable(
+        RedisConfig.cacheName,
+        key = "'_startPrice_'+#startPrice+'_endPrice_'+#endPrice+'_from_'+#from+'_to_'+#to+'_latitude_'+#latitude+'_longitude_'+#longitude+'_altitude_'+#altitude"
+        //, value = ["Household"]
+    )
     override fun search(
         query: String,
         page: Int,

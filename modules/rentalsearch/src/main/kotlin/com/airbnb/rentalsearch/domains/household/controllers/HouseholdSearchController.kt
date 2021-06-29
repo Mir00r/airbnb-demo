@@ -1,5 +1,6 @@
 package com.airbnb.rentalsearch.domains.household.controllers
 
+import com.airbnb.common.configs.RedisConfig
 import com.airbnb.rentalprocessor.domains.households.models.dtos.HouseholdDto
 import com.airbnb.rentalprocessor.domains.households.models.enums.HouseholdStatuses
 import com.airbnb.rentalprocessor.domains.households.models.mappers.HouseholdMapper
@@ -9,6 +10,7 @@ import com.airbnb.rentalsearch.utils.Constants
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,14 +24,14 @@ import java.time.Instant
  */
 @RestController
 @Api(tags = [Constants.HOUSEHOLDS_SEARCH], description = Constants.REST_API)
-class HouseholdSearchController @Autowired constructor(
+open class HouseholdSearchController @Autowired constructor(
     private val householdService: HouseholdService,
     private val householdMapper: HouseholdMapper
 ) {
 
     @GetMapping(Route.V1.SEARCH_HOUSEHOLDS)
     @ApiOperation(value = "Search household using addresses, price range and date range also latitude, longitude and altitude")
-    fun search(
+    open fun search(
         @RequestParam("q", defaultValue = "") query: String,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,

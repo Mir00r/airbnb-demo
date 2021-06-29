@@ -1,3 +1,12 @@
+drop schema if exists authenticator cascade;
+drop schema if exists rentalprocessor cascade;
+drop schema if exists rentalsearch cascade;
+
+
+create schema if not exists authenticator;
+create schema if not exists rentalprocessor;
+create schema if not exists rentalsearch;
+
 create table if not exists authenticator.m_users
 (
     id bigserial not null
